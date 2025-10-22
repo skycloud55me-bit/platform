@@ -56,6 +56,35 @@
                     </button>
                 </div>
 
+                <!-- شاشة التذكيرات الجديدة -->
+<div id="reminders-screen" class="screen">
+    <h2>التذكيرات الذكية 🔔</h2>
+    
+    <div class="reminder-options">
+        <button onclick="showReminderDialog('daily')">📅 يومي</button>
+        <button onclick="showReminderDialog('weekly')">📆 أسبوعي</button>
+        <button onclick="showReminderDialog('monthly')">🗓️ شهري</button>
+        <button onclick="showReminderDialog('yearly')">🎉 سنوي</button>
+        <button onclick="showReminderDialog('once')">⏰ مرة واحدة</button>
+    </div>
+    
+    <div class="reminders-list" id="remindersList">
+        <!-- قائمة التذكيرات -->
+    </div>
+</div>
+
+<!-- نافذة إضافة تذكير -->
+<div id="reminderDialog" class="dialog">
+    <div class="dialog-content">
+        <h3>أضف تذكير جديد</h3>
+        <input type="text" id="reminderText" placeholder="اكتب التذكير هنا...">
+        <div class="dialog-actions">
+            <button onclick="addNewReminder()">إضافة</button>
+            <button onclick="closeReminderDialog()">إلغاء</button>
+        </div>
+    </div>
+</div>
+                
                 <div class="quick-actions">
                     <button onclick="addReminder('ممارسة الرياضة')">🏃‍♀️ تذكير رياضي</button>
                     <button onclick="addReminder('وقت القراءة')">📚 وقت المطالعة</button>
