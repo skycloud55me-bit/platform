@@ -60,6 +60,105 @@ class SmartCalendar {
             dayElement.onclick = () => this.showDayTasks(day);
             calendarGrid.appendChild(dayElement);
         }
+
+        class SmartNotificationSystem {
+    constructor() {
+        this.pendingNotifications = [];
+        this.setupNotificationPermission();
+    }
+    
+    async setupNotificationPermission() {
+        if ('Notification' in window) {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                console.log('تم تفعيل الإشعارات');
+            }
+        }
+    }
+    
+    scheduleSmartNotification(task) {
+        const taskTime = new Date(task.date);
+        const now = new Date();
+        const timeUntilTask = taskTime.getTime() - now.getTime();
+        
+        // إشعارات متعددة حسب الوقت المتبقي
+        if (timeUntilTask > 24 * 60 * 60 * 1000) { // أكثر من يوم
+            setTimeout(() => {
+                this.showNotification(`📅 غداً: ${task.title}`);
+            }, timeUntilTask - (24 * 60 * 60 * 1000));
+        }
+        
+        if (timeUntilTask > 60 * 60 * 1000) { // أكثر من ساعة
+            setTimeout(() => {
+                this.showNotification(`⏰ خلال ساعة: ${task.title}`);
+            }, timeUntilTask - (60 * 60 * 1000));
+        }
+        
+        // الإشعار الأساسي
+        setTimeout(() => {
+            this.showNotification(`🔔 الآن: ${task.title}`);
+            this.speakNotification(task.title);
+        }, timeUntilTask);
+    }
+    
+    showNotification(message) {
+        // إشعار المتصفح
+        if ('Notification' in window && Notification.permission === 'granted') {
+            const notification = new Notification('رفيقتك الذكية 💫', {
+                body: message,
+                icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🌟</text></svg>',
+                requireInteraction: true
+            });
+            
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
+        }
+        
+        // إشعار داخل التطبيق
+        this.showInAppNotification(message);
+    }
+    
+    showInAppNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'smart-notification';
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-icon">💫</span>
+                <div class="notification-text">
+                    <div class="notification-title">رفيقتك الذكية</div>
+                    <div class="notification-message">${message}</div>
+                </div>
+                <button class="notification-close">✕</button>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // إغلاق عند النقر
+        notification.querySelector('.notification-close').onclick = () => {
+            notification.remove();
+        };
+        
+        // إغلاق تلقائي بعد 8 ثواني
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 8000);
+    }
+    
+    speakNotification(message) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(`تذكير: ${message}`);
+            utterance.lang = 'ar-SA';
+            utterance.rate = 0.8;
+            utterance.pitch = 1;
+            speechSynthesis.speak(utterance);
+        }
+    }
+}
     }
 
     hasTasksOnDate(day) {
