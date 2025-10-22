@@ -1,23 +1,3 @@
-let chosenAvatar = null;
-
-window.onload = function() {
-  document.getElementById("start-screen").style.display = "block";
-};
-
-function chooseAvatar(type) {
-  chosenAvatar = type;
-  alert("تم اختيار شخصية " + (type === "male" ? "ذكر" : "أنثى"));
-}
-
-function startChat() {
-  if (!chosenAvatar) {
-    alert("الرجاء اختيار الشخصية أولاً 🧍‍♀️🧍‍♂️");
-    return;
-  }
-  document.getElementById("start-screen").style.display = "none";
-  document.getElementById("chat-screen").style.display = "block";
-}
-
 async function analyzeMood() {
   const input = document.getElementById('user-input').value.trim();
   const responseBox = document.getElementById('ai-response');
@@ -27,15 +7,15 @@ async function analyzeMood() {
     return;
   }
 
-  if (!window.Security.checkInput(input)) {
-    responseBox.textContent = "⚠️ تم حظر بعض الكلمات غير المسموح بها.";
-    return;
-  }
-
+  // تحليل المشاعر
   let mood = detectMood(input);
+
+  // توليد رد ذكي
   let reply = generateResponse(mood);
   responseBox.textContent = reply;
-  enterWorld(mood, chosenAvatar);
+
+  // عرض العالم الافتراضي المناسب
+  enterWorld(mood);
 }
 
 function detectMood(text) {
@@ -54,13 +34,13 @@ function detectMood(text) {
 function generateResponse(mood) {
   switch (mood) {
     case "sad":
-      return "يبدو أنك تمر بيوم صعب 💔. امنح نفسك الراحة والوقت، فالغد قد يحمل لك ابتسامة.";
+      return "يبدو أنك تمر بيوم صعب 💔. اسمح لنفسك بالراحة، فالغد قد يحمل لك ابتسامة.";
     case "happy":
-      return "جميل جدًا! 😊 استمتع بلحظتك وشارك البهجة مع من حولك.";
+      return "جميل جدًا! 😊 استمتع بلحظتك وشارك البهجة من حولك!";
     case "angry":
-      return "خذ لحظة للهدوء 😌، الغضب مؤقت لكن الوعي دائم.";
+      return "خذ لحظة وهدّئ نفسك 😌. الغضب مؤقت، لكن الحكمة دائمة.";
     case "anxious":
-      return "تنفس ببطء 🌸، أنت أقوى من أفكارك المقلقة.";
+      return "تنفس ببطء 🌸، وتذكر أنك تتحكم في خطواتك القادمة.";
     default:
       return "أنا هنا لأستمع إليك 🌿. أخبرني أكثر عن شعورك؟";
   }
