@@ -1,10 +1,250 @@
-// التطبيق الرئيسي المحدث
+class SmartCalendar {
+    constructor() {
+        this.currentDate = new Date();
+        this.tasks = [];
+        this.loadTasks();
+        this.initCalendar();
+    }
+
+    initCalendar() {
+        this.renderCalendar();
+        this.renderUpcomingTasks();
+        this.startReminderChecker();
+    }
+
+    renderCalendar() {
+        const calendarGrid = document.getElementById('calendarGrid');
+        const monthYear = document.getElementById('currentMonth');
+        
+        const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                           'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+        monthYear.textContent = `${monthNames[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`;
+        
+        calendarGrid.innerHTML = '';
+        
+        const days = ['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
+        days.forEach(day => {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day header';
+            dayElement.textContent = day;
+            calendarGrid.appendChild(dayElement);
+        });
+        
+        const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+        const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
+        
+        for (let i = 0; i < firstDay.getDay(); i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'calendar-day empty';
+            calendarGrid.appendChild(emptyDay);
+        }
+        
+        for (let day = 1; day <= lastDay.getDate(); day++) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            dayElement.textContent = day;
+            
+            const hasTasks = this.hasTasksOnDate(day);
+            if (hasTasks) {
+                dayElement.classList.add('has-tasks');
+                dayElement.innerHTML += '<span class="task-dot">•</span>';
+            }
+            
+            const today = new Date();
+            if (day === today.getDate() && 
+                this.currentDate.getMonth() === today.getMonth() && 
+                this.currentDate.getFullYear() === today.getFullYear()) {
+                dayElement.classList.add('today');
+            }
+            
+            dayElement.onclick = () => this.showDayTasks(day);
+            calendarGrid.appendChild(dayElement);
+        }
+    }
+
+    hasTasksOnDate(day) {
+        const targetDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
+        return this.tasks.some(task => this.isSameDate(new Date(task.date), targetDate));
+    }
+
+    isSameDate(date1, date2) {
+        return date1.getDate() === date2.getDate() &&
+               date1.getMonth() === date2.getMonth() &&
+               date1.getFullYear() === date2.getFullYear();
+    }
+
+    addTask(title, dateTime, repeat) {
+        const task = {
+            id: Date.now(),
+            title: title,
+            date: dateTime,
+            repeat: repeat,
+            completed: false
+        };
+        
+        this.tasks.push(task);
+        this.saveTasks();
+        this.renderCalendar();
+        this.renderUpcomingTasks();
+        this.scheduleNotification(task);
+        
+        return task;
+    }
+
+    scheduleNotification(task) {
+        const taskTime = new Date(task.date);
+        const now = new Date();
+        
+        if (taskTime > now) {
+            const timeUntilTask = taskTime.getTime() - now.getTime();
+            
+            setTimeout(() => {
+                this.showNotification(`⏰ تذكير: ${task.title} بعد 15 دقيقة`);
+            }, timeUntilTask - (15 * 60 * 1000));
+            
+            setTimeout(() => {
+                this.showNotification(`🔔 حان وقت: ${task.title}`);
+                this.speakReminder(task.title);
+            }, timeUntilTask);
+        }
+    }
+
+    showNotification(message) {
+        if ('Notification' in window) {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    new Notification('رفيقتك 💫', { body: message });
+                }
+            });
+        }
+        
+        this.showInAppNotification(message);
+    }
+
+    showInAppNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-icon">🔔</span>
+                <div class="notification-text">${message}</div>
+                <button class="notification-close">✕</button>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        notification.querySelector('.notification-close').onclick = () => {
+            notification.remove();
+        };
+        
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 10000);
+    }
+
+    speakReminder(message) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(message);
+            utterance.lang = 'ar-SA';
+            utterance.rate = 0.8;
+            speechSynthesis.speak(utterance);
+        }
+    }
+
+    renderUpcomingTasks() {
+        const upcomingTasks = document.getElementById('upcomingTasks');
+        const now = new Date();
+        
+        const upcoming = this.tasks
+            .filter(task => new Date(task.date) > now && !task.completed)
+            .sort((a, b) => new Date(a.date) - new Date(b.date))
+            .slice(0, 5);
+        
+        upcomingTasks.innerHTML = '';
+        
+        if (upcoming.length === 0) {
+            upcomingTasks.innerHTML = '<p style="text-align: center; opacity: 0.7;">لا توجد مهام قادمة</p>';
+            return;
+        }
+        
+        upcoming.forEach(task => {
+            const taskElement = document.createElement('div');
+            taskElement.className = 'upcoming-task';
+            taskElement.innerHTML = `
+                <div class="task-time">${this.formatTime(new Date(task.date))}</div>
+                <div class="task-title">${task.title}</div>
+                <button onclick="app.calendar.completeTask(${task.id})">✓</button>
+            `;
+            upcomingTasks.appendChild(taskElement);
+        });
+    }
+
+    formatTime(date) {
+        return date.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    startReminderChecker() {
+        setInterval(() => {
+            this.checkDueTasks();
+        }, 60000);
+    }
+
+    checkDueTasks() {
+        const now = new Date();
+        this.tasks.forEach(task => {
+            if (!task.completed && new Date(task.date) <= now) {
+                this.showNotification(`⏰ ${task.title}`);
+                this.completeTask(task.id);
+            }
+        });
+    }
+
+    completeTask(taskId) {
+        const taskIndex = this.tasks.findIndex(task => task.id === taskId);
+        if (taskIndex !== -1) {
+            this.tasks[taskIndex].completed = true;
+            this.saveTasks();
+            this.renderUpcomingTasks();
+        }
+    }
+
+    saveTasks() {
+        localStorage.setItem('calendarTasks', JSON.stringify(this.tasks));
+    }
+
+    loadTasks() {
+        const saved = localStorage.getItem('calendarTasks');
+        if (saved) {
+            this.tasks = JSON.parse(saved);
+            this.tasks.forEach(task => {
+                if (!task.completed && new Date(task.date) > new Date()) {
+                    this.scheduleNotification(task);
+                }
+            });
+        }
+    }
+
+    showDayTasks(day) {
+        const targetDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
+        const dayTasks = this.tasks.filter(task => this.isSameDate(new Date(task.date), targetDate));
+        
+        if (dayTasks.length > 0) {
+            const tasksText = dayTasks.map(task => task.title).join('، ');
+            this.showNotification(`المهام في ${day}: ${tasksText}`);
+        } else {
+            this.showNotification(`لا توجد مهام في ${day}`);
+        }
+    }
+}
+
 class CompanionApp {
     constructor() {
         this.userName = '';
         this.userMood = 'happy';
-        this.tasks = [];
-        this.voiceAssistant = null;
+        this.calendar = null;
         this.init();
     }
 
@@ -12,263 +252,211 @@ class CompanionApp {
         this.loadUserData();
         this.setupEventListeners();
         this.showWelcomeScreen();
-        this.initVoiceAssistant();
+        this.initCalendar();
     }
 
-    initVoiceAssistant() {
-        this.voiceAssistant = new AdvancedVoiceAssistant();
+    initCalendar() {
+        this.calendar = new SmartCalendar();
+    }
+
+    loadUserData() {
+        const savedName = localStorage.getItem('userName');
+        if (savedName) {
+            this.userName = savedName;
+            this.showChatScreen();
+        }
     }
 
     setupEventListeners() {
-        // زر الاستماع - محدث
         document.getElementById('listenBtn').addEventListener('click', () => {
             this.startVoiceInteraction();
         });
 
-        // زر التحدث - محدث
-        document.getElementById('speakBtn').addEventListener('click', () => {
-            this.giveDailyMotivation();
-        });
-
-        // إدخال نصي للمحادثة
-        this.setupTextInput();
-    }
-
-    setupTextInput() {
-        const userInput = document.createElement('input');
-        userInput.type = 'text';
-        userInput.placeholder = 'اكتبي رسالتك هنا...';
-        userInput.style.cssText = `
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid var(--primary);
-            border-radius: 8px;
-            background: rgba(255,255,255,0.1);
-            color: var(--text);
-        `;
-        
-        userInput.addEventListener('keypress', (e) => {
+        document.getElementById('textInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                const text = userInput.value.trim();
+                const text = e.target.value.trim();
                 if (text) {
-                    this.voiceAssistant.addUserMessage(text);
-                    setTimeout(() => {
-                        const response = this.voiceAssistant.generateSmartResponse(text);
-                        this.voiceAssistant.addAIMessage(response);
-                        this.voiceAssistant.speakMessage(response);
-                    }, 1000);
-                    userInput.value = '';
+                    this.processUserMessage(text);
+                    e.target.value = '';
                 }
             }
         });
-
-        document.querySelector('.voice-controls').appendChild(userInput);
     }
 
-    startVoiceInteraction() {
-        if (this.voiceAssistant) {
-            this.voiceAssistant.startListening();
-        }
+    showWelcomeScreen() {
+        this.showScreen('welcome-screen');
     }
-
-    giveDailyMotivation() {
-        const motivations = [
-            "أنتِ شخص مذهل وقادر على تحقيق كل ما تحلمين به! 🌟",
-            "اليوم هو فرصتك الجديدة لصنع المعجزات! 🌈",
-            "لا تستهيني بقوتك الداخلية... أنتِ أقوى مما تتخيلين! 💪",
-            "كل خطوة تخطينها تقربك من حلمك... استمري! 🚀"
-        ];
-        
-        const motivation = motivations[Math.floor(Math.random() * motivations.length)];
-        this.voiceAssistant.addAIMessage(motivation);
-        this.voiceAssistant.speakMessage(motivation);
-    }
-
-    // باقي الدوال تبقى كما هي مع تحسينات بسيطة...
-}
-
-class SmartReminderSystem {
-    constructor() {
-        this.reminders = [];
-        this.loadReminders();
-    }
-
-    addReminder(text, schedule) {
-        const reminder = {
-            id: Date.now(),
-            text: text,
-            schedule: schedule, // 'daily', 'weekly', 'monthly', 'yearly', 'once'
-            time: schedule === 'once' ? new Date() : null,
-            enabled: true
-        };
-        
-        this.reminders.push(reminder);
-        this.saveReminders();
-        this.scheduleNotification(reminder);
-        
-        return reminder;
-    }
-
-    scheduleNotification(reminder) {
-        if (reminder.schedule === 'once') {
-            this.scheduleOneTimeReminder(reminder);
-        } else {
-            this.scheduleRecurringReminder(reminder);
-        }
-    }
-
-    scheduleOneTimeReminder(reminder) {
-        // تذكير لمرة واحدة
-        const now = new Date();
-        const reminderTime = new Date(reminder.time);
-        
-        if (reminderTime > now) {
-            const timeout = reminderTime.getTime() - now.getTime();
-            setTimeout(() => {
-                this.showNotification(reminder.text);
-            }, timeout);
-        }
-    }
-
-    scheduleRecurringReminder(reminder) {
-        // تذكير متكرر
-        setInterval(() => {
-            this.showNotification(reminder.text);
-        }, this.getInterval(reminder.schedule));
-    }
-
-    getInterval(schedule) {
-        const intervals = {
-            'daily': 24 * 60 * 60 * 1000,
-            'weekly': 7 * 24 * 60 * 60 * 1000,
-            'monthly': 30 * 24 * 60 * 60 * 1000,
-            'yearly': 365 * 24 * 60 * 60 * 1000
-        };
-        return intervals[schedule] || intervals.daily;
-    }
-
-    showNotification(message) {
-        // إشعار المتصفح
-        if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification('رفيقتك 💫', {
-                body: message,
-                icon: '/icon.png'
-            });
-        }
-        
-        // إشعار داخل التطبيق
-        this.showInAppNotification(message);
-    }
-
-    showInAppNotification(message) {
-        const notification = document.createElement('div');
-        notification.className = 'floating-notification';
-        notification.innerHTML = `
-            <div class="notification-content">
-                <span class="notification-icon">🔔</span>
-                <span class="notification-text">${message}</span>
-                <button class="notification-close">✕</button>
-            </div>
-        `;
-        
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--primary);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            z-index: 10000;
-            animation: slideIn 0.5s ease;
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // إغلاق التذكير
-        notification.querySelector('.notification-close').onclick = () => {
-            notification.remove();
-        };
-        
-        // إغلاق تلقائي بعد 5 ثواني
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
-            }
-        }, 5000);
-    }
-
-    saveReminders() {
-        localStorage.setItem('userReminders', JSON.stringify(this.reminders));
-    }
-
-    loadReminders() {
-        const saved = localStorage.getItem('userReminders');
-        if (saved) {
-            this.reminders = JSON.parse(saved);
-            this.reminders.forEach(reminder => {
-                if (reminder.enabled) {
-                    this.scheduleNotification(reminder);
-                }
-
-                class CompanionApp {
-    // ... الكود السابق ...
 
     showChatScreen() {
         this.showScreen('chat-screen');
         this.updateGreeting();
         
-        // الترحيب الصوتي التلقائي بعد 2 ثانية
         setTimeout(() => {
             this.giveWelcomeGreeting();
         }, 2000);
+    }
+
+    showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        document.getElementById(screenId).classList.add('active');
+        
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+    }
+
+    setUserName() {
+        const nameInput = document.getElementById('userName');
+        const name = nameInput.value.trim();
+        
+        if (name) {
+            this.userName = name;
+            localStorage.setItem('userName', name);
+            this.showChatScreen();
+            this.speakMessage(`مرحباً ${name}! سعيدة بلقائك! أنا رفيقتك هنا، سأساعدك في تنظيم يومك وأكون معك دائماً. كيف حالك اليوم؟`);
+        }
+    }
+
+    updateGreeting() {
+        const greetings = [
+            `مرحباً ${this.userName}! كيف حالك اليوم؟`,
+            `أهلاً وسهلاً ${this.userName}! ما أخبارك؟`,
+            `يا هلا ${this.userName}! كيف كان نومك؟`
+        ];
+        
+        const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+        document.getElementById('greetingMessage').textContent = randomGreeting;
     }
 
     giveWelcomeGreeting() {
         const greetings = [
             `مرحباً ${this.userName}! 🌸 أتمنى أنك بخير اليوم`,
             `أهلاً وسهلاً ${this.userName}! 💫 كيف حالك هذا اليوم؟`,
-            `يا هلا ${this.userName}! 🌟 أتمنى أن يومك جميل`,
-            `مساء الخير ${this.userName}! 🌙 أتمنى أنك تقضين وقتاً جميلاً`
+            `يا هلا ${this.userName}! 🌟 أتمنى أن يومك جميل`
         ];
         
         const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-        
-        // تحديث الواجهة
         document.getElementById('greetingMessage').textContent = greeting;
         
-        // التحدث به
         if (this.voiceAssistant) {
-            this.voiceAssistant.speakMessage(greeting);
+            this.speakMessage(greeting);
         }
+    }
+
+    startVoiceInteraction() {
+        this.addAIMessage("حالياً أتعلم فهم صوتك، يمكنك الكتابة لي في الحقل أدناه 💬");
+    }
+
+    processUserMessage(text) {
+        this.addUserMessage(text);
+        
+        setTimeout(() => {
+            const responses = [
+                "أفهم ما تقولين... هل يمكنك مشاركتي المزيد؟ 💭",
+                "شكراً لمشاركتي هذا... أستمع إليك بكل اهتمام 👂",
+                "كل كلمة تقولينها تساعدني في فهمك أكثر 🌸"
+            ];
+            
+            const response = responses[Math.floor(Math.random() * responses.length)];
+            this.addAIMessage(response);
+            this.speakMessage(response);
+        }, 1000);
+    }
+
+    addUserMessage(text) {
+        const chatMessages = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message user-message';
+        messageDiv.textContent = `أنت: ${text}`;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    addAIMessage(text) {
+        const chatMessages = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message ai-message';
+        messageDiv.textContent = `الرفيقة: ${text}`;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    speakMessage(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ar-SA';
+            utterance.rate = 0.8;
+            speechSynthesis.speak(utterance);
+        }
+    }
+
+    changeMood(mood) {
+        this.userMood = mood;
+        this.updateWorldScene();
+        
+        const moodMessages = {
+            happy: "رائع! السعادة تليق بك! 🌞",
+            calm: "الهدوء يجلب السلام الداخلي 🕊️",
+            peaceful: "الطمأنينة تجعل كل شيء أجمل 🌸"
+        };
+        
+        this.addAIMessage(moodMessages[mood] || "شكراً لمشاركة مشاعرك معي 💕");
+    }
+
+    updateWorldScene() {
+        const scene = document.getElementById('scene');
+        scene.className = `scene ${this.userMood}-scene`;
     }
 }
 
-// دوال جديدة لإدارة التذكيرات
-let currentReminderType = '';
+// الدوال العامة
+let app;
 
-function showReminderDialog(type) {
-    currentReminderType = type;
-    document.getElementById('reminderDialog').classList.add('active');
+function showScreen(screenId) {
+    app.showScreen(screenId);
 }
 
-function closeReminderDialog() {
-    document.getElementById('reminderDialog').classList.remove('active');
+function setUserName() {
+    app.setUserName();
 }
 
-function addNewReminder() {
-    const text = document.getElementById('reminderText').value.trim();
-    if (text) {
-        if (window.app.reminderSystem) {
-            window.app.reminderSystem.addReminder(text, currentReminderType);
-        }
-        document.getElementById('reminderText').value = '';
-        closeReminderDialog();
+function changeMood(mood) {
+    app.changeMood(mood);
+}
+
+function showAddTaskModal() {
+    document.getElementById('taskModal').classList.add('active');
+    // تعيين التاريخ الحالي كقيمة افتراضية
+    const now = new Date();
+    const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    document.getElementById('taskDateTime').value = localDateTime;
+}
+
+function closeTaskModal() {
+    document.getElementById('taskModal').classList.remove('active');
+}
+
+function saveTask() {
+    const title = document.getElementById('taskTitle').value.trim();
+    const dateTime = document.getElementById('taskDateTime').value;
+    const repeat = document.getElementById('taskRepeat').value;
+    
+    if (title && dateTime) {
+        app.calendar.addTask(title, dateTime, repeat);
+        closeTaskModal();
+        app.addAIMessage(`أضفت "${title}" إلى تقويمك 📅`);
     }
 }
-            });
-        }
-    }
+
+function changeMonth(direction) {
+    app.calendar.currentDate.setMonth(app.calendar.currentDate.getMonth() + direction);
+    app.calendar.renderCalendar();
 }
+
+// تهيئة التطبيق
+document.addEventListener('DOMContentLoaded', () => {
+    app = new CompanionApp();
+    window.app = app;
+});
