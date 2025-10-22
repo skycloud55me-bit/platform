@@ -513,4 +513,131 @@ body {
         min-height: 50px;
         font-size: 0.9em;
     }
+
+    /* تحسينات للجوال */
+@media (max-width: 768px) {
+    #voice-assistant {
+        width: 95%;
+        bottom: 70px;
+        padding: 15px;
+    }
+    
+    .character-image {
+        font-size: 2.5em;
+    }
+    
+    .character-name {
+        font-size: 0.9em;
+        padding: 3px 10px;
+    }
+    
+    .calendar-grid {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+    }
+    
+    .calendar-day {
+        padding: 8px 2px;
+        min-height: 40px;
+        font-size: 0.8em;
+    }
+    
+    .calendar-day.header {
+        font-size: 0.7em;
+        padding: 8px 2px;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+    
+    .quick-actions button {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+    
+    .voice-controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .modal-content {
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    .main-nav {
+        padding: 8px;
+    }
+    
+    .nav-btn {
+        padding: 8px 12px;
+        font-size: 1em;
+    }
+}
+
+/* تحسينات للحاسوب */
+@media (min-width: 1024px) {
+    #voice-assistant {
+        max-width: 600px;
+    }
+    
+    .calendar-grid {
+        gap: 8px;
+    }
+    
+    .calendar-day {
+        min-height: 80px;
+        padding: 15px;
+        font-size: 1.1em;
+    }
+    
+    .character-image {
+        font-size: 5em;
+    }
+}
+
+/* تحسين النقاط الحمراء للمهام */
+.task-dot {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    color: var(--secondary);
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .task-dot {
+        bottom: 1px;
+        right: 1px;
+        font-size: 1em;
+    }
+}
+
+/* تحسين ظهور النقاط في التقويم */
+.calendar-day.has-tasks {
+    position: relative;
+    background: rgba(78, 205, 196, 0.1);
+}
+
+.calendar-day.has-tasks .task-dot {
+    display: block;
+}
+
+/* إصلاح مشكلة العناصر الطافية */
+.floating-elements .element {
+    font-size: 1.2em;
+}
+
+@media (max-width: 768px) {
+    .floating-elements .element {
+        font-size: 1em;
+    }
+    
+    .element:nth-child(1) { top: 15%; left: 5%; }
+    .element:nth-child(2) { top: 70%; left: 85%; }
+    .element:nth-child(3) { top: 50%; left: 70%; }
+     }
 }
