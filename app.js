@@ -419,6 +419,118 @@ function startVoiceInteraction() {
     app.startVoiceInteraction();
 }
 
+class AdvancedVoiceSystem {
+    constructor() {
+        this.recognition = null;
+        this.isListening = false;
+        this.setupVoiceRecognition();
+    }
+
+    setupVoiceRecognition() {
+        // التحقق من دعم المتصفح للتعرف على الصوت
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        
+        if (SpeechRecognition) {
+            this.recognition = new SpeechRecognition();
+            this.recognition.continuous = false;
+            this.recognition.interimResults = false;
+            this.recognition.lang = 'ar-SA';
+            
+            this.recognition.onstart = () => {
+                this.isListening = true;
+                this.updateListeningUI(true);
+                console.log('بدء الاستماع...');
+            };
+            
+            this.recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                console.log('تم التعرف على:', transcript);
+                this.processVoiceCommand(transcript);
+            };
+            
+            this.recognition.onerror = (event) => {
+                console.log('خطأ في التعرف على الصوت:', event.error);
+                this.isListening = false;
+                this.updateListeningUI(false);
+            };
+            
+            this.recognition.onend = () => {
+                this.isListening = false;
+                this.updateListeningUI(false);
+            };
+        }
+    }
+    
+    startListening() {
+        if (this.recognition && !this.isListening) {
+            try {
+                this.recognition.start();
+            } catch (error) {
+                console.log('خطأ في بدء الاستماع:', error);
+                this.fallbackToTextInput();
+            }
+        } else {
+            this.fallbackToTextInput();
+        }
+    }
+    
+    processVoiceCommand(transcript) {
+        app.addUserMessage(transcript);
+        
+        // معالجة الأوامر الصوتية
+        setTimeout(() => {
+            const response = this.generateVoiceResponse(transcript);
+            app.addAIMessage(response);
+            app.speakMessage(response);
+        }, 1000);
+    }
+    
+    generateVoiceResponse(text) {
+        const lowerText = text.toLowerCase();
+        
+        // تحليل النص وتوليد رد ذكي
+        if (lowerText.includes('مرحبا') || lowerText.includes('اهلا')) {
+            return `أهلاً وسهلاً ${app.userName}! 🌸 سعيدة بتحدثك معي`;
+        }
+        
+        if (lowerText.includes('شكرا') || lowerText.includes('ممتاز')) {
+            return `العفو يا ${app.userName}! 💫 دائماً سعيدة بمساعدتك`;
+        }
+        
+        if (lowerText.includes('مهمة') || lowerText.includes('تذكير')) {
+            return `رائع! يمكنك إضافة المهمة من خلال التقويم 📅`;
+        }
+        
+        if (lowerText.includes('كيف حالك')) {
+            return `بخير والحمدلله! 🌟 سعيدة لأنك تسألين عني`;
+        }
+        
+        // ردود عامة
+        const generalResponses = [
+            "أسمعك بوضوح! 💭 هل يمكنك إعادة ما قلته؟",
+            "شكراً للتحدث معي! 🌸 صوتك جميل",
+            "أفهم ما تقولين... 👂 هل تريدين مساعدة في شيء محدد؟"
+        ];
+        
+        return generalResponses[Math.floor(Math.random() * generalResponses.length)];
+    }
+    
+    updateListeningUI(listening) {
+        const listenBtn = document.getElementById('listenBtn');
+        if (listening) {
+            listenBtn.innerHTML = '<span>🔴</span> أستمع إليك...';
+            listenBtn.style.background = 'var(--accent)';
+        } else {
+            listenBtn.innerHTML = '<span>🎤</span> تحدثي معي';
+            listenBtn.style.background = 'var(--primary)';
+        }
+    }
+    
+    fallbackToTextInput() {
+        app.addAIMessage("يمكنك الكتابة لي في الحقل أدناه 💬");
+    }
+}
+
 function showAddTaskModal() {
     document.getElementById('taskModal').classList.add('active');
     const now = new Date();
