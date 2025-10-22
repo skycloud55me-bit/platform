@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رفيقك - عالمك الشخصي الذكي</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- العالم الافتراضي -->
+    <div id="virtual-world">
+        <div id="scene" class="scene happy-scene">
+            <!-- المشهد سيتغير حسب الحالة المزاجية -->
+            <div class="background"></div>
+            <div id="character" class="character">
+                <div class="character-image">👩</div>
+                <div class="character-name" id="characterName">رفيقتك</div>
+            </div>
+            <div class="floating-elements">
+                <div class="element">🌸</div>
+                <div class="element">🐦</div>
+                <div class="element">☁️</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- واجهة المساعد الصوتي -->
+    <div id="voice-assistant">
+        <div class="assistant-container">
+            <!-- شاشة الترحيب -->
+            <div id="welcome-screen" class="screen active">
+                <h1>مرحباً بك في عالمك الخاص! 🌟</h1>
+                <p>أنا رفيقتك هنا، سأساعدك في تنظيم يومك وأكون معك دائماً</p>
+                <div class="input-group">
+                    <input type="text" id="userName" placeholder="ما اسمك الجميل؟">
+                    <button onclick="setUserName()">ابدأ الرحلة</button>
+                </div>
+            </div>
+
+            <!-- شاشة المحادثة -->
+            <div id="chat-screen" class="screen">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai-message">
+                        <span id="greetingMessage">مرحباً! كيف حالك اليوم؟</span>
+                    </div>
+                </div>
+                
+                <div class="voice-controls">
+                    <button id="listenBtn" class="voice-btn">
+                        <span>🎤</span>
+                        تحدثي معي
+                    </button>
+                    <button id="speakBtn" class="voice-btn">
+                        <span>🔊</span>
+                        تحدث إليّ
+                    </button>
+                </div>
+
+                <div class="quick-actions">
+                    <button onclick="addReminder('ممارسة الرياضة')">🏃‍♀️ تذكير رياضي</button>
+                    <button onclick="addReminder('وقت القراءة')">📚 وقت المطالعة</button>
+                    <button onclick="changeMood('happy')">😊 أشعر بالسعادة</button>
+                    <button onclick="changeMood('calm')">😌 أشعر بالهدوء</button>
+                </div>
+            </div>
+
+            <!-- شاشة المهام -->
+            <div id="tasks-screen" class="screen">
+                <h2>مهام اليوم 📅</h2>
+                <div class="tasks-list" id="tasksList">
+                    <!-- المهام ستضاف هنا -->
+                </div>
+                <div class="add-task">
+                    <input type="text" id="newTask" placeholder="أضف مهمة جديدة...">
+                    <button onclick="addTask()">إضافة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- التنقل -->
+    <nav class="main-nav">
+        <button class="nav-btn active" onclick="showScreen('chat-screen')">💬 محادثة</button>
+        <button class="nav-btn" onclick="showScreen('tasks-screen')">📅 مهام</button>
+        <button class="nav-btn" onclick="showWorldSettings()">🌎 عالمي</button>
+    </nav>
+
+    <script src="voice-assistant.js"></script>
+    <script src="virtual-world.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
