@@ -1,0 +1,313 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #333;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* العالم الافتراضي */
+#virtual-world {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.scene {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: all 1s ease;
+}
+
+/* المشاهد المختلفة */
+.happy-scene {
+    background: linear-gradient(180deg, #87CEEB 0%, #98FB98 100%);
+}
+
+.calm-scene {
+    background: linear-gradient(180deg, #E6E6FA 0%, #B0E0E6 100%);
+}
+
+.peaceful-scene {
+    background: linear-gradient(180deg, #F0F8FF 0%, #E0FFFF 100%);
+}
+
+.background::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.3) 2%, transparent 20%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.2) 1%, transparent 15%);
+}
+
+/* الشخصية */
+.character {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.character-image {
+    font-size: 4em;
+    margin-bottom: 10px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.character-name {
+    background: rgba(255,255,255,0.8);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* العناصر الطافية */
+.floating-elements {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.element {
+    position: absolute;
+    font-size: 1.5em;
+    animation: floatAround 6s ease-in-out infinite;
+}
+
+.element:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+.element:nth-child(2) { top: 60%; left: 80%; animation-delay: -2s; }
+.element:nth-child(3) { top: 40%; left: 60%; animation-delay: -4s; }
+
+@keyframes floatAround {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(20px, -15px) rotate(5deg); }
+    50% { transform: translate(-10px, -25px) rotate(-5deg); }
+    75% { transform: translate(-20px, -10px) rotate(3deg); }
+}
+
+/* المساعد الصوتي */
+#voice-assistant {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.assistant-container {
+    position: relative;
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* شاشة الترحيب */
+.input-group {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    font-size: 1em;
+}
+
+.input-group button {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* شاشة المحادثة */
+.chat-messages {
+    height: 150px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 10px;
+}
+
+.message {
+    margin: 10px 0;
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 80%;
+}
+
+.ai-message {
+    background: #667eea;
+    color: white;
+    margin-right: auto;
+}
+
+.voice-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.voice-btn {
+    flex: 1;
+    background: #764ba2;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 1em;
+}
+
+.voice-btn:hover {
+    background: #667eea;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.quick-actions button {
+    background: rgba(102, 126, 234, 0.1);
+    border: 1px solid #667eea;
+    color: #667eea;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.quick-actions button:hover {
+    background: #667eea;
+    color: white;
+}
+
+/* شاشة المهام */
+.tasks-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 15px 0;
+}
+
+.task-item {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    padding: 10px;
+    background: rgba(102, 126, 234, 0.1);
+    margin: 5px 0;
+    border-radius: 8px;
+}
+
+.add-task {
+    display: flex;
+    gap: 10px;
+}
+
+.add-task input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #667eea;
+    border-radius: 8px;
+}
+
+.add-task button {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* التنقل */
+.main-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    z-index: 1001;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: all 0.3s ease;
+}
+
+.nav-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+/* التكيف مع الجوال */
+@media (max-width: 768px) {
+    #voice-assistant {
+        width: 95%;
+        bottom: 70px;
+    }
+    
+    .character-image {
+        font-size: 3em;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
