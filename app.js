@@ -13,54 +13,64 @@ class SmartCalendar {
     }
 
     renderCalendar() {
-        const calendarGrid = document.getElementById('calendarGrid');
-        const monthYear = document.getElementById('currentMonth');
-        
-        const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-                           'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
-        monthYear.textContent = `${monthNames[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`;
-        
-        calendarGrid.innerHTML = '';
-        
-        const days = ['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
-        days.forEach(day => {
-            const dayElement = document.createElement('div');
-            dayElement.className = 'calendar-day header';
-            dayElement.textContent = day;
-            calendarGrid.appendChild(dayElement);
-        });
-        
-        const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
-        const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
-        
-        for (let i = 0; i < firstDay.getDay(); i++) {
-            const emptyDay = document.createElement('div');
-            emptyDay.className = 'calendar-day empty';
-            calendarGrid.appendChild(emptyDay);
-        }
-        
-        for (let day = 1; day <= lastDay.getDate(); day++) {
-            const dayElement = document.createElement('div');
-            dayElement.className = 'calendar-day';
-            dayElement.textContent = day;
-            
-            const hasTasks = this.hasTasksOnDate(day);
-            if (hasTasks) {
-                dayElement.classList.add('has-tasks');
-                dayElement.innerHTML += '<span class="task-dot">•</span>';
-            }
-            
-            const today = new Date();
-            if (day === today.getDate() && 
-                this.currentDate.getMonth() === today.getMonth() && 
-                this.currentDate.getFullYear() === today.getFullYear()) {
-                dayElement.classList.add('today');
-            }
-            
-            dayElement.onclick = () => this.showDayTasks(day);
-            calendarGrid.appendChild(dayElement);
-        }
+    const calendarGrid = document.getElementById('calendarGrid');
+    const monthYear = document.getElementById('currentMonth');
+    
+    const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                       'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+    monthYear.textContent = `${monthNames[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`;
+    
+    calendarGrid.innerHTML = '';
+    
+    const days = ['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
+    days.forEach(day => {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day header';
+        dayElement.textContent = day;
+        calendarGrid.appendChild(dayElement);
+    });
+    
+    const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+    const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
+    
+    for (let i = 0; i < firstDay.getDay(); i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.className = 'calendar-day empty';
+        calendarGrid.appendChild(emptyDay);
     }
+    
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day';
+        
+        // إنشاء محتوى اليوم
+        const dayContent = document.createElement('div');
+        dayContent.className = 'day-content';
+        dayContent.textContent = day;
+        dayElement.appendChild(dayContent);
+        
+        // التحقق من المهام
+        const hasTasks = this.hasTasksOnDate(day);
+        if (hasTasks) {
+            dayElement.classList.add('has-tasks');
+            const taskDot = document.createElement('div');
+            taskDot.className = 'task-dot';
+            taskDot.textContent = '•';
+            dayElement.appendChild(taskDot);
+        }
+        
+        // تمييز اليوم الحالي
+        const today = new Date();
+        if (day === today.getDate() && 
+            this.currentDate.getMonth() === today.getMonth() && 
+            this.currentDate.getFullYear() === today.getFullYear()) {
+            dayElement.classList.add('today');
+        }
+        
+        dayElement.onclick = () => this.showDayTasks(day);
+        calendarGrid.appendChild(dayElement);
+        }
+   }
 
     hasTasksOnDate(day) {
         const targetDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
