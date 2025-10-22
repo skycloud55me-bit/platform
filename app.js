@@ -1,3 +1,35 @@
+class CompanionApp {
+    constructor() {
+        this.userName = '';
+        this.userMood = 'happy';
+        this.calendar = null;
+        this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        this.init();
+    }
+
+    init() {
+        this.detectDeviceType();
+        this.loadUserData();
+        this.setupEventListeners();
+        this.showWelcomeScreen();
+        this.initCalendar();
+    }
+
+    detectDeviceType() {
+        // إضافة كلاس للجسم حسب نوع الجهاز
+        if (this.isMobile) {
+            document.body.classList.add('mobile-device');
+        } else {
+            document.body.classList.add('desktop-device');
+        }
+        
+        // تحسين للشاشات الصغيرة
+        if (window.innerWidth < 480) {
+            document.body.classList.add('very-small-screen');
+        }
+    }
+}
+
 class SmartCalendar {
     constructor() {
         this.currentDate = new Date();
