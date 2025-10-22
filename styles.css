@@ -557,3 +557,82 @@ body {
         font-size: 1em;
     }
 }
+
+/* الإشعارات الذكية */
+.smart-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 0;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 10000;
+    animation: smartSlideIn 0.6s ease;
+    max-width: 350px;
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    gap: 12px;
+}
+
+.notification-icon {
+    font-size: 1.5em;
+    flex-shrink: 0;
+}
+
+.notification-text {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: bold;
+    font-size: 0.9em;
+    opacity: 0.9;
+    margin-bottom: 4px;
+}
+
+.notification-message {
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.notification-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.9em;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes smartSlideIn {
+    from {
+        transform: translateX(100%) translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* تحسينات للشاشات الصغيرة */
+@media (max-width: 480px) {
+    .smart-notification {
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+}
