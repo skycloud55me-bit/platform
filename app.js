@@ -662,3 +662,102 @@ document.addEventListener('DOMContentLoaded', () => {
     app = new CompanionApp();
     window.app = app;
 });
+
+class ProgressTracker {
+    constructor() {
+        this.stats = {
+            tasksCompleted: 0,
+            tasksCreated: 0,
+            moodChanges: 0,
+            voiceInteractions: 0,
+            lastActive: new Date().toISOString()
+        };
+        this.loadStats();
+    }
+    
+    trackTaskCompletion() {
+        this.stats.tasksCompleted++;
+        this.stats.lastActive = new Date().toISOString();
+        this.saveStats();
+        this.checkAchievements();
+    }
+    
+    trackTaskCreation() {
+        this.stats.tasksCreated++;
+        this.saveStats();
+    }
+    
+    trackMoodChange() {
+        this.stats.moodChanges++;
+        this.saveStats();
+    }
+    
+    trackVoiceInteraction() {
+        this.stats.voiceInteractions++;
+        this.saveStats();
+    }
+    
+    checkAchievements() {
+        if (this.stats.tasksCompleted >= 10) {
+            this.showAchievement('🎯 إنجاز!', 'أكملت 10 مهام بنجاح!');
+        }
+        
+        if (this.stats.tasksCreated >= 20) {
+            this.showAchievement('📝 منظمة محترفة', 'أنشأت 20 مهمة!');
+        }
+        
+        if (this.stats.voiceInteractions >= 5) {
+            this.showAchievement('🎤 متحدثة بارعة', 'استخدمت الصوت 5 مرات!');
+        }
+    }
+    
+    showAchievement(title, message) {
+        const achievement = document.createElement('div');
+        achievement.className = 'achievement-notification';
+        achievement.innerHTML = `
+            <div class="achievement-content">
+                <div class="achievement-icon">🏆</div>
+                <div class="achievement-text">
+                    <div class="achievement-title">${title}</div>
+                    <div class="achievement-message">${message}</div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(achievement);
+        
+        setTimeout(() => {
+            if (achievement.parentElement) {
+                achievement.remove();
+            }
+        }, 5000);
+    }
+    
+    getWeeklyReport() {
+        const completedThisWeek = this.stats.tasksCompleted; // سيتم تطويره
+        return {
+            tasksCompleted: completedThisWeek,
+            productivity: Math.min(100, (completedThisWeek / 10) * 100),
+            mood: 'إيجابي', // سيتم تطويره
+            recommendation: this.generateRecommendation()
+        };
+    }
+    
+    generateRecommendation() {
+        if (this.stats.tasksCompleted < 5) {
+            return "حاولي إكمال 5 مهام هذا الأسبوع! 🌟";
+        }
+        return "أداؤك رائع! استمري في التقدم 💫";
+    }
+    
+    saveStats() {
+        localStorage.setItem('userStats', JSON.stringify(this.stats));
+    }
+    
+    loadStats() {
+        const saved = localStorage.getItem('userStats');
+        if (saved) {
+            this.stats = JSON.parse(saved);
+        }
+    }
+}
