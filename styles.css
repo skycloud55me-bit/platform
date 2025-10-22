@@ -1,16 +1,24 @@
-/* الألوان المتناغمة الجديدة */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 :root {
-    --primary: #8A2BE2;    /* بنفسجي أنيق */
-    --secondary: #4ECDC4;  /* فيروزي هادئ */
-    --accent: #FF6B6B;     /* وردي ناعم */
-    --background: #1A1A2E; /* أزرق ليلي */
-    --surface: #16213E;    /* أزرق متوسط */
-    --text: #E8F4F8;      /* أبيض ناعم */
+    --primary: #8A2BE2;
+    --secondary: #4ECDC4;
+    --accent: #FF6B6B;
+    --background: #1A1A2E;
+    --surface: #16213E;
+    --text: #E8F4F8;
 }
 
 body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, var(--background) 0%, var(--surface) 100%);
     color: var(--text);
+    height: 100vh;
+    overflow: hidden;
 }
 
 .scene.happy-scene {
