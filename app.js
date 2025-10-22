@@ -13,64 +13,54 @@ class SmartCalendar {
     }
 
     renderCalendar() {
-    const calendarGrid = document.getElementById('calendarGrid');
-    const monthYear = document.getElementById('currentMonth');
-    
-    const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-                       'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
-    monthYear.textContent = `${monthNames[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`;
-    
-    calendarGrid.innerHTML = '';
-    
-    const days = ['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
-    days.forEach(day => {
-        const dayElement = document.createElement('div');
-        dayElement.className = 'calendar-day header';
-        dayElement.textContent = day;
-        calendarGrid.appendChild(dayElement);
-    });
-    
-    const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
-    const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
-    
-    for (let i = 0; i < firstDay.getDay(); i++) {
-        const emptyDay = document.createElement('div');
-        emptyDay.className = 'calendar-day empty';
-        calendarGrid.appendChild(emptyDay);
+        const calendarGrid = document.getElementById('calendarGrid');
+        const monthYear = document.getElementById('currentMonth');
+        
+        const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                           'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+        monthYear.textContent = `${monthNames[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`;
+        
+        calendarGrid.innerHTML = '';
+        
+        const days = ['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'];
+        days.forEach(day => {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day header';
+            dayElement.textContent = day;
+            calendarGrid.appendChild(dayElement);
+        });
+        
+        const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+        const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
+        
+        for (let i = 0; i < firstDay.getDay(); i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'calendar-day empty';
+            calendarGrid.appendChild(emptyDay);
+        }
+        
+        for (let day = 1; day <= lastDay.getDate(); day++) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            dayElement.innerHTML = `<div class="day-content">${day}</div>`;
+            
+            const hasTasks = this.hasTasksOnDate(day);
+            if (hasTasks) {
+                dayElement.classList.add('has-tasks');
+                dayElement.innerHTML += '<div class="task-dot">•</div>';
+            }
+            
+            const today = new Date();
+            if (day === today.getDate() && 
+                this.currentDate.getMonth() === today.getMonth() && 
+                this.currentDate.getFullYear() === today.getFullYear()) {
+                dayElement.classList.add('today');
+            }
+            
+            dayElement.onclick = () => this.showDayTasks(day);
+            calendarGrid.appendChild(dayElement);
+        }
     }
-    
-    for (let day = 1; day <= lastDay.getDate(); day++) {
-        const dayElement = document.createElement('div');
-        dayElement.className = 'calendar-day';
-        
-        // إنشاء محتوى اليوم
-        const dayContent = document.createElement('div');
-        dayContent.className = 'day-content';
-        dayContent.textContent = day;
-        dayElement.appendChild(dayContent);
-        
-        // التحقق من المهام
-        const hasTasks = this.hasTasksOnDate(day);
-        if (hasTasks) {
-            dayElement.classList.add('has-tasks');
-            const taskDot = document.createElement('div');
-            taskDot.className = 'task-dot';
-            taskDot.textContent = '•';
-            dayElement.appendChild(taskDot);
-        }
-        
-        // تمييز اليوم الحالي
-        const today = new Date();
-        if (day === today.getDate() && 
-            this.currentDate.getMonth() === today.getMonth() && 
-            this.currentDate.getFullYear() === today.getFullYear()) {
-            dayElement.classList.add('today');
-        }
-        
-        dayElement.onclick = () => this.showDayTasks(day);
-        calendarGrid.appendChild(dayElement);
-        }
-   }
 
     hasTasksOnDate(day) {
         const targetDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
@@ -244,55 +234,28 @@ class SmartCalendar {
         if (dayTasks.length > 0) {
             const tasksText = dayTasks.map(task => task.title).join('، ');
             this.showNotification(`المهام في ${day}: ${tasksText}`);
-        } else {
-            this.showNotification(`لا توجد مهام في ${day}`);
         }
     }
 }
 
-    class CompanionApp {
+class CompanionApp {
     constructor() {
         this.userName = '';
         this.userMood = 'happy';
         this.calendar = null;
-        this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         this.init();
     }
 
     init() {
-        this.detectDeviceType();
         this.loadUserData();
         this.setupEventListeners();
         this.showWelcomeScreen();
         this.initCalendar();
     }
 
-    detectDeviceType() {
-        // إضافة كلاس للجسم حسب نوع الجهاز
-        if (this.isMobile) {
-            document.body.classList.add('mobile-device');
-            console.log('📱 تم الكشف عن جهاز محمول');
-        } else {
-            document.body.classList.add('desktop-device');
-            console.log('💻 تم الكشف عن حاسوب');
-        }
-        
-        // تحسين للشاشات الصغيرة
-        if (window.innerWidth < 480) {
-            document.body.classList.add('very-small-screen');
-            console.log('📱 شاشة صغيرة جداً');
-        }
-        
-        // إضافة حجم الشاشة ككلاس
-        if (window.innerWidth < 768) {
-            document.body.classList.add('small-screen');
-        } else if (window.innerWidth < 1024) {
-            document.body.classList.add('medium-screen');
-        } else {
-            document.body.classList.add('large-screen');
-        }
+    initCalendar() {
+        this.calendar = new SmartCalendar();
     }
-}
 
     loadUserData() {
         const savedName = localStorage.getItem('userName');
@@ -303,10 +266,6 @@ class SmartCalendar {
     }
 
     setupEventListeners() {
-        document.getElementById('listenBtn').addEventListener('click', () => {
-            this.startVoiceInteraction();
-        });
-
         document.getElementById('textInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const text = e.target.value.trim();
@@ -350,7 +309,7 @@ class SmartCalendar {
             this.userName = name;
             localStorage.setItem('userName', name);
             this.showChatScreen();
-            this.speakMessage(`مرحباً ${name}! سعيدة بلقائك! أنا رفيقتك هنا، سأساعدك في تنظيم يومك وأكون معك دائماً. كيف حالك اليوم؟`);
+            this.speakMessage(`مرحباً ${name}! سعيدة بلقائك! كيف حالك اليوم؟`);
         }
     }
 
@@ -374,10 +333,7 @@ class SmartCalendar {
         
         const greeting = greetings[Math.floor(Math.random() * greetings.length)];
         document.getElementById('greetingMessage').textContent = greeting;
-        
-        if (this.voiceAssistant) {
-            this.speakMessage(greeting);
-        }
+        this.speakMessage(greeting);
     }
 
     startVoiceInteraction() {
@@ -433,8 +389,7 @@ class SmartCalendar {
         
         const moodMessages = {
             happy: "رائع! السعادة تليق بك! 🌞",
-            calm: "الهدوء يجلب السلام الداخلي 🕊️",
-            peaceful: "الطمأنينة تجعل كل شيء أجمل 🌸"
+            calm: "الهدوء يجلب السلام الداخلي 🕊️"
         };
         
         this.addAIMessage(moodMessages[mood] || "شكراً لمشاركة مشاعرك معي 💕");
@@ -446,7 +401,6 @@ class SmartCalendar {
     }
 }
 
-// الدوال العامة
 let app;
 
 function showScreen(screenId) {
@@ -461,9 +415,12 @@ function changeMood(mood) {
     app.changeMood(mood);
 }
 
+function startVoiceInteraction() {
+    app.startVoiceInteraction();
+}
+
 function showAddTaskModal() {
     document.getElementById('taskModal').classList.add('active');
-    // تعيين التاريخ الحالي كقيمة افتراضية
     const now = new Date();
     const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
     document.getElementById('taskDateTime').value = localDateTime;
@@ -490,7 +447,6 @@ function changeMonth(direction) {
     app.calendar.renderCalendar();
 }
 
-// تهيئة التطبيق
 document.addEventListener('DOMContentLoaded', () => {
     app = new CompanionApp();
     window.app = app;
