@@ -21,35 +21,438 @@ body {
     overflow: hidden;
 }
 
-.scene.happy-scene {
+/* العالم الافتراضي */
+#virtual-world {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.scene {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: all 1s ease;
+}
+
+.happy-scene {
     background: linear-gradient(180deg, #4A306D 0%, #8A2BE2 100%);
 }
 
-.scene.calm-scene {
+.calm-scene {
     background: linear-gradient(180deg, #1E3A5F 0%, #4ECDC4 100%);
 }
 
-.scene.peaceful-scene {
+.peaceful-scene {
     background: linear-gradient(180deg, #2D3047 0%, #FF6B6B 100%);
 }
 
+.background::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.3) 2%, transparent 20%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.2) 1%, transparent 15%);
+}
+
+.character {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.character-image {
+    font-size: 4em;
+    margin-bottom: 10px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.character-name {
+    background: rgba(255,255,255,0.8);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.floating-elements {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.element {
+    position: absolute;
+    font-size: 1.5em;
+    animation: floatAround 6s ease-in-out infinite;
+}
+
+.element:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+.element:nth-child(2) { top: 60%; left: 80%; animation-delay: -2s; }
+.element:nth-child(3) { top: 40%; left: 60%; animation-delay: -4s; }
+
+@keyframes floatAround {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(20px, -15px) rotate(5deg); }
+    50% { transform: translate(-10px, -25px) rotate(-5deg); }
+    75% { transform: translate(-20px, -10px) rotate(3deg); }
+}
+
+/* المساعد الصوتي */
 #voice-assistant {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 500px;
     background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 1000;
     border: 1px solid var(--primary);
+}
+
+.assistant-container {
+    position: relative;
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.input-group {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    font-size: 1em;
+    background: rgba(255,255,255,0.1);
+    color: var(--text);
+}
+
+.input-group button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.chat-messages {
+    height: 150px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 10px;
+}
+
+.message {
+    margin: 10px 0;
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 80%;
+}
+
+.ai-message {
+    background: var(--primary);
+    color: white;
+    margin-right: auto;
+}
+
+.user-message {
+    background: var(--accent);
+    color: white;
+    margin-left: auto;
+}
+
+.voice-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
 }
 
 .voice-btn {
     background: var(--primary);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 1em;
+}
+
+#textInput {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--primary);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    color: var(--text);
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
 }
 
 .quick-actions button {
     background: rgba(138, 43, 226, 0.1);
     border: 1px solid var(--primary);
     color: var(--primary);
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* الإشعارات العائمة */
-.floating-notification {
+.quick-actions button:hover {
+    background: var(--primary);
+    color: white;
+}
+
+/* نظام التقويم */
+.calendar-container {
+    background: var(--surface);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-header button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-nav button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-day {
+    padding: 15px;
+    text-align: center;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    cursor: pointer;
+    position: relative;
+    min-height: 60px;
+}
+
+.calendar-day.header {
+    background: var(--primary);
+    font-weight: bold;
+}
+
+.calendar-day.today {
+    background: var(--accent);
+    color: white;
+}
+
+.calendar-day.has-tasks {
+    border: 2px solid var(--secondary);
+}
+
+.task-dot {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    color: var(--secondary);
+    font-size: 1.5em;
+}
+
+.tasks-overview {
+    margin-top: 20px;
+}
+
+.upcoming-task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: rgba(255,255,255,0.05);
+    margin: 5px 0;
+    border-radius: 8px;
+}
+
+.upcoming-task button {
+    background: var(--secondary);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* النافذة المنبثقة */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 2000;
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--surface);
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+}
+
+.form-group {
+    margin: 15px 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--secondary);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    color: var(--text);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--primary);
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    flex: 1;
+}
+
+/* التنقل */
+.main-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--surface);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    z-index: 1001;
+    border-top: 1px solid var(--primary);
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: all 0.3s ease;
+    color: var(--text);
+}
+
+.nav-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* الإشعارات */
+.notification {
     position: fixed;
     top: 20px;
     right: 20px;
@@ -87,57 +490,27 @@ body {
     }
 }
 
-/* خيارات التذكيرات */
-.reminder-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin: 20px 0;
-}
-
-.reminder-options button {
-    background: rgba(138, 43, 226, 0.1);
-    border: 1px solid var(--primary);
-    color: var(--primary);
-    padding: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.reminder-options button:hover {
-    background: var(--primary);
-    color: white;
-}
-
-/* النافذة المنبثقة */
-.dialog {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 2000;
-}
-
-.dialog.active {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.dialog-content {
-    background: var(--surface);
-    padding: 30px;
-    border-radius: 15px;
-    width: 90%;
-    max-width: 400px;
-}
-
-.dialog-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
+@media (max-width: 768px) {
+    #voice-assistant {
+        width: 95%;
+        bottom: 70px;
+    }
+    
+    .character-image {
+        font-size: 3em;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .calendar-grid {
+        gap: 2px;
+    }
+    
+    .calendar-day {
+        padding: 8px;
+        min-height: 50px;
+        font-size: 0.9em;
+    }
 }
