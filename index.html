@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- العالم الافتراضي -->
     <div id="virtual-world">
         <div id="scene" class="scene happy-scene">
             <div class="background"></div>
@@ -23,10 +22,8 @@
         </div>
     </div>
 
-    <!-- واجهة المساعد الصوتي -->
     <div id="voice-assistant">
         <div class="assistant-container">
-            <!-- شاشة الترحيب -->
             <div id="welcome-screen" class="screen active">
                 <h1>مرحباً بك في عالمك الخاص! 🌟</h1>
                 <p>أنا رفيقتك هنا، سأساعدك في تنظيم يومك وأكون معك دائماً</p>
@@ -36,7 +33,6 @@
                 </div>
             </div>
 
-            <!-- شاشة المحادثة -->
             <div id="chat-screen" class="screen">
                 <div class="chat-messages" id="chatMessages">
                     <div class="message ai-message">
@@ -45,7 +41,7 @@
                 </div>
                 
                 <div class="voice-controls">
-                    <button id="listenBtn" class="voice-btn">
+                    <button id="listenBtn" class="voice-btn" onclick="startVoiceInteraction()">
                         <span>🎤</span>
                         تحدثي معي
                     </button>
@@ -59,7 +55,6 @@
                 </div>
             </div>
 
-            <!-- شاشة التقويم -->
             <div id="calendar-screen" class="screen">
                 <div class="calendar-header">
                     <h2>📅 تقويم مهامك</h2>
@@ -73,22 +68,17 @@
                         <button onclick="changeMonth(1)">الشهر التالي ▶</button>
                     </div>
                     
-                    <div class="calendar-grid" id="calendarGrid">
-                        <!-- سيتم ملء التقويم بالجافاسكريبت -->
-                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
                 </div>
                 
                 <div class="tasks-overview">
                     <h4>المهام القادمة</h4>
-                    <div id="upcomingTasks">
-                        <!-- المهام القادمة -->
-                    </div>
+                    <div id="upcomingTasks"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- نافذة إضافة مهمة -->
     <div id="taskModal" class="modal">
         <div class="modal-content">
             <h3>إضافة مهمة جديدة</h3>
@@ -120,7 +110,6 @@
         </div>
     </div>
 
-    <!-- التنقل -->
     <nav class="main-nav">
         <button class="nav-btn active" onclick="showScreen('chat-screen')">💬 محادثة</button>
         <button class="nav-btn" onclick="showScreen('calendar-screen')">📅 تقويم</button>
@@ -128,7 +117,6 @@
 
     <script src="app.js"></script>
     <script src="voice-assistant.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/SpeechSynthesis/0.3.0/speech-synthesis.min.js"></script>
     <script src="virtual-world.js"></script>
     <script src="styles.css"></script>
 </body>
