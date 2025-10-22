@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>منصة الذكاء الوجودي — رفيقك الهادئ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1 class="brand">الذكاء الوجودي — رفيق رحلتك</h1>
+    <p class="lead">مرآة هادئة، عالم داخلي، وإرشاد آمن.</p>
+  </header>
+
+  <!-- Start / avatar selection -->
+  <main id="app">
+    <section id="start-screen" class="card">
+      <h2>اختر شخصيتك الرمزية</h2>
+      <div class="avatar-choice" role="list">
+        <button class="avatar" data-avatar="male" onclick="chooseAvatar('male')" aria-label="شخصية ذكر">
+          <img src="https://i.imgur.com/nWth6Ae.png" alt="ذكر" />
+          <div class="avatar-label">ذكر</div>
+        </button>
+        <button class="avatar" data-avatar="female" onclick="chooseAvatar('female')" aria-label="شخصية أنثى">
+          <img src="https://i.imgur.com/zKn2h9M.png" alt="أنثى" />
+          <div class="avatar-label">أنثى</div>
+        </button>
+      </div>
+      <button class="primary" id="startBtn" onclick="startChat()">ابدأ رحلتك 🌌</button>
+      <p class="muted">الخصوصية مضمونة — لا يتم إرسال بياناتك خارج جهازك.</p>
+    </section>
+
+    <!-- Chat -->
+    <section id="chat-screen" class="card hidden" aria-live="polite">
+      <div id="ai-response" class="response">كيف تشعر اليوم؟ اكتب بضعة كلمات دون معلومات شخصية.</div>
+      <input id="user-input" type="text" placeholder="اكتب شعورك هنا..." aria-label="حقل الشعور" />
+      <div class="actions">
+        <button class="primary" id="sendBtn" onclick="analyzeMood()">إرسال</button>
+        <button class="ghost" onclick="goBack()">اختيار شخصية</button>
+      </div>
+      <p class="muted small">استخدام تجريبي — لا يُعد بديلاً عن الدعم المهني.</p>
+    </section>
+  </main>
+
+  <!-- 3D world canvas -->
+  <canvas id="world-canvas" aria-hidden="true"></canvas>
+
+  <footer>
+    <small>نسخة تجريبية — محفوظة لك خصوصيتك.</small>
+  </footer>
+
+  <!-- libs and scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="security.js"></script>
+  <script src="world.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
