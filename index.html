@@ -10,7 +10,6 @@
     <!-- العالم الافتراضي -->
     <div id="virtual-world">
         <div id="scene" class="scene happy-scene">
-            <!-- المشهد سيتغير حسب الحالة المزاجية -->
             <div class="background"></div>
             <div id="character" class="character">
                 <div class="character-image">👩</div>
@@ -50,59 +49,73 @@
                         <span>🎤</span>
                         تحدثي معي
                     </button>
-                    <button id="speakBtn" class="voice-btn">
-                        <span>🔊</span>
-                        تحدث إليّ
-                    </button>
+                    <input type="text" id="textInput" placeholder="اكتبي رسالتك هنا...">
                 </div>
 
-                <!-- شاشة التذكيرات الجديدة -->
-<div id="reminders-screen" class="screen">
-    <h2>التذكيرات الذكية 🔔</h2>
-    
-    <div class="reminder-options">
-        <button onclick="showReminderDialog('daily')">📅 يومي</button>
-        <button onclick="showReminderDialog('weekly')">📆 أسبوعي</button>
-        <button onclick="showReminderDialog('monthly')">🗓️ شهري</button>
-        <button onclick="showReminderDialog('yearly')">🎉 سنوي</button>
-        <button onclick="showReminderDialog('once')">⏰ مرة واحدة</button>
-    </div>
-    
-    <div class="reminders-list" id="remindersList">
-        <!-- قائمة التذكيرات -->
-    </div>
-</div>
-
-<!-- نافذة إضافة تذكير -->
-<div id="reminderDialog" class="dialog">
-    <div class="dialog-content">
-        <h3>أضف تذكير جديد</h3>
-        <input type="text" id="reminderText" placeholder="اكتب التذكير هنا...">
-        <div class="dialog-actions">
-            <button onclick="addNewReminder()">إضافة</button>
-            <button onclick="closeReminderDialog()">إلغاء</button>
-        </div>
-    </div>
-</div>
-                
                 <div class="quick-actions">
-                    <button onclick="addReminder('ممارسة الرياضة')">🏃‍♀️ تذكير رياضي</button>
-                    <button onclick="addReminder('وقت القراءة')">📚 وقت المطالعة</button>
+                    <button onclick="showScreen('calendar-screen')">📅 فتح التقويم</button>
                     <button onclick="changeMood('happy')">😊 أشعر بالسعادة</button>
                     <button onclick="changeMood('calm')">😌 أشعر بالهدوء</button>
                 </div>
             </div>
 
-            <!-- شاشة المهام -->
-            <div id="tasks-screen" class="screen">
-                <h2>مهام اليوم 📅</h2>
-                <div class="tasks-list" id="tasksList">
-                    <!-- المهام ستضاف هنا -->
+            <!-- شاشة التقويم -->
+            <div id="calendar-screen" class="screen">
+                <div class="calendar-header">
+                    <h2>📅 تقويم مهامك</h2>
+                    <button onclick="showAddTaskModal()">+ إضافة مهمة</button>
                 </div>
-                <div class="add-task">
-                    <input type="text" id="newTask" placeholder="أضف مهمة جديدة...">
-                    <button onclick="addTask()">إضافة</button>
+                
+                <div class="calendar-container">
+                    <div class="calendar-nav">
+                        <button onclick="changeMonth(-1)">◀ الشهر السابق</button>
+                        <h3 id="currentMonth">يناير 2024</h3>
+                        <button onclick="changeMonth(1)">الشهر التالي ▶</button>
+                    </div>
+                    
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- سيتم ملء التقويم بالجافاسكريبت -->
+                    </div>
                 </div>
+                
+                <div class="tasks-overview">
+                    <h4>المهام القادمة</h4>
+                    <div id="upcomingTasks">
+                        <!-- المهام القادمة -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة مهمة -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <h3>إضافة مهمة جديدة</h3>
+            
+            <div class="form-group">
+                <label>المهمة:</label>
+                <input type="text" id="taskTitle" placeholder="اكتب المهمة هنا...">
+            </div>
+            
+            <div class="form-group">
+                <label>التاريخ والوقت:</label>
+                <input type="datetime-local" id="taskDateTime">
+            </div>
+            
+            <div class="form-group">
+                <label>التكرار:</label>
+                <select id="taskRepeat">
+                    <option value="once">مرة واحدة</option>
+                    <option value="daily">يومي</option>
+                    <option value="weekly">أسبوعي</option>
+                    <option value="monthly">شهري</option>
+                </select>
+            </div>
+            
+            <div class="modal-actions">
+                <button onclick="saveTask()" class="btn-primary">حفظ المهمة</button>
+                <button onclick="closeTaskModal()" class="btn-secondary">إلغاء</button>
             </div>
         </div>
     </div>
@@ -110,14 +123,13 @@
     <!-- التنقل -->
     <nav class="main-nav">
         <button class="nav-btn active" onclick="showScreen('chat-screen')">💬 محادثة</button>
-        <button class="nav-btn" onclick="showScreen('tasks-screen')">📅 مهام</button>
-        <button class="nav-btn" onclick="showWorldSettings()">🌎 عالمي</button>
+        <button class="nav-btn" onclick="showScreen('calendar-screen')">📅 تقويم</button>
     </nav>
 
+    <script src="app.js"></script>
     <script src="voice-assistant.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/SpeechSynthesis/0.3.0/speech-synthesis.min.js"></script>
     <script src="virtual-world.js"></script>
-    <script src="app.js"></script>
     <script src="styles.css"></script>
 </body>
 </html>
