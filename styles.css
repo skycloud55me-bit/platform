@@ -641,3 +641,122 @@ body {
     .element:nth-child(3) { top: 50%; left: 70%; }
      }
 }
+
+/* تحسين النافذة المنبثقة */
+.modal-content {
+    background: var(--surface);
+    padding: 25px;
+    border-radius: 15px;
+    width: 95%;
+    max-width: 450px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.form-group {
+    margin: 15px 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--secondary);
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    color: var(--text);
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--secondary);
+}
+
+/* تحسين محتوى اليوم في التقويم */
+.day-content {
+    text-align: center;
+    font-weight: bold;
+}
+
+.calendar-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* تحسين الشاشات الصغيرة جداً */
+@media (max-width: 480px) {
+    #voice-assistant {
+        bottom: 60px;
+        padding: 12px;
+    }
+    
+    .calendar-nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .calendar-nav button {
+        width: 100%;
+    }
+    
+    .calendar-day {
+        min-height: 35px;
+        padding: 5px 1px;
+        font-size: 0.75em;
+    }
+    
+    .main-nav {
+        padding: 5px;
+    }
+    
+    .nav-btn {
+        padding: 6px 8px;
+        font-size: 0.9em;
+    }
+}
+
+/* تحسين المهام القادمة */
+.upcoming-task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: rgba(255,255,255,0.05);
+    margin: 8px 0;
+    border-radius: 10px;
+    border-right: 3px solid var(--secondary);
+}
+
+.upcoming-task .task-time {
+    color: var(--secondary);
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.upcoming-task .task-title {
+    flex: 1;
+    margin: 0 10px;
+}
+
+.upcoming-task button {
+    background: var(--secondary);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
