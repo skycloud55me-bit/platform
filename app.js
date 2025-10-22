@@ -87,3 +87,132 @@ class CompanionApp {
 
     // باقي الدوال تبقى كما هي مع تحسينات بسيطة...
 }
+
+class SmartReminderSystem {
+    constructor() {
+        this.reminders = [];
+        this.loadReminders();
+    }
+
+    addReminder(text, schedule) {
+        const reminder = {
+            id: Date.now(),
+            text: text,
+            schedule: schedule, // 'daily', 'weekly', 'monthly', 'yearly', 'once'
+            time: schedule === 'once' ? new Date() : null,
+            enabled: true
+        };
+        
+        this.reminders.push(reminder);
+        this.saveReminders();
+        this.scheduleNotification(reminder);
+        
+        return reminder;
+    }
+
+    scheduleNotification(reminder) {
+        if (reminder.schedule === 'once') {
+            this.scheduleOneTimeReminder(reminder);
+        } else {
+            this.scheduleRecurringReminder(reminder);
+        }
+    }
+
+    scheduleOneTimeReminder(reminder) {
+        // تذكير لمرة واحدة
+        const now = new Date();
+        const reminderTime = new Date(reminder.time);
+        
+        if (reminderTime > now) {
+            const timeout = reminderTime.getTime() - now.getTime();
+            setTimeout(() => {
+                this.showNotification(reminder.text);
+            }, timeout);
+        }
+    }
+
+    scheduleRecurringReminder(reminder) {
+        // تذكير متكرر
+        setInterval(() => {
+            this.showNotification(reminder.text);
+        }, this.getInterval(reminder.schedule));
+    }
+
+    getInterval(schedule) {
+        const intervals = {
+            'daily': 24 * 60 * 60 * 1000,
+            'weekly': 7 * 24 * 60 * 60 * 1000,
+            'monthly': 30 * 24 * 60 * 60 * 1000,
+            'yearly': 365 * 24 * 60 * 60 * 1000
+        };
+        return intervals[schedule] || intervals.daily;
+    }
+
+    showNotification(message) {
+        // إشعار المتصفح
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('رفيقتك 💫', {
+                body: message,
+                icon: '/icon.png'
+            });
+        }
+        
+        // إشعار داخل التطبيق
+        this.showInAppNotification(message);
+    }
+
+    showInAppNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'floating-notification';
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-icon">🔔</span>
+                <span class="notification-text">${message}</span>
+                <button class="notification-close">✕</button>
+            </div>
+        `;
+        
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 10000;
+            animation: slideIn 0.5s ease;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // إغلاق التذكير
+        notification.querySelector('.notification-close').onclick = () => {
+            notification.remove();
+        };
+        
+        // إغلاق تلقائي بعد 5 ثواني
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+
+    saveReminders() {
+        localStorage.setItem('userReminders', JSON.stringify(this.reminders));
+    }
+
+    loadReminders() {
+        const saved = localStorage.getItem('userReminders');
+        if (saved) {
+            this.reminders = JSON.parse(saved);
+            this.reminders.forEach(reminder => {
+                if (reminder.enabled) {
+                    this.scheduleNotification(reminder);
+                }
+            });
+        }
+    }
+}
