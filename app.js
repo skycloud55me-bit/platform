@@ -212,6 +212,62 @@ class SmartReminderSystem {
                 if (reminder.enabled) {
                     this.scheduleNotification(reminder);
                 }
+
+                class CompanionApp {
+    // ... الكود السابق ...
+
+    showChatScreen() {
+        this.showScreen('chat-screen');
+        this.updateGreeting();
+        
+        // الترحيب الصوتي التلقائي بعد 2 ثانية
+        setTimeout(() => {
+            this.giveWelcomeGreeting();
+        }, 2000);
+    }
+
+    giveWelcomeGreeting() {
+        const greetings = [
+            `مرحباً ${this.userName}! 🌸 أتمنى أنك بخير اليوم`,
+            `أهلاً وسهلاً ${this.userName}! 💫 كيف حالك هذا اليوم؟`,
+            `يا هلا ${this.userName}! 🌟 أتمنى أن يومك جميل`,
+            `مساء الخير ${this.userName}! 🌙 أتمنى أنك تقضين وقتاً جميلاً`
+        ];
+        
+        const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+        
+        // تحديث الواجهة
+        document.getElementById('greetingMessage').textContent = greeting;
+        
+        // التحدث به
+        if (this.voiceAssistant) {
+            this.voiceAssistant.speakMessage(greeting);
+        }
+    }
+}
+
+// دوال جديدة لإدارة التذكيرات
+let currentReminderType = '';
+
+function showReminderDialog(type) {
+    currentReminderType = type;
+    document.getElementById('reminderDialog').classList.add('active');
+}
+
+function closeReminderDialog() {
+    document.getElementById('reminderDialog').classList.remove('active');
+}
+
+function addNewReminder() {
+    const text = document.getElementById('reminderText').value.trim();
+    if (text) {
+        if (window.app.reminderSystem) {
+            window.app.reminderSystem.addReminder(text, currentReminderType);
+        }
+        document.getElementById('reminderText').value = '';
+        closeReminderDialog();
+    }
+}
             });
         }
     }
