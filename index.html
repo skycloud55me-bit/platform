@@ -1,58 +1,80 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>منصة الذكاء الوجودي — رفيقك الهادئ</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كونكِ الداخلي - حيث تلتقي الروح بالذكاء</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1 class="brand">الذكاء الوجودي — رفيق رحلتك</h1>
-    <p class="lead">مرآة هادئة، عالم داخلي، وإرشاد آمن.</p>
-  </header>
+    <!-- الكون المتحرك خلف الكواليس -->
+    <div id="living-universe">
+        <div class="pulse-1"></div>
+        <div class="pulse-2"></div>
+        <div class="pulse-3"></div>
+        <div class="floating-hearts">
+            <div class="heart">💫</div>
+            <div class="heart">🌙</div>
+            <div class="heart">✨</div>
+            <div class="heart">🌸</div>
+        </div>
+    </div>
 
-  <!-- Start / avatar selection -->
-  <main id="app">
-    <section id="start-screen" class="card">
-      <h2>اختر شخصيتك الرمزية</h2>
-      <div class="avatar-choice" role="list">
-        <button class="avatar" data-avatar="male" onclick="chooseAvatar('male')" aria-label="شخصية ذكر">
-          <img src="https://i.imgur.com/nWth6Ae.png" alt="ذكر" />
-          <div class="avatar-label">ذكر</div>
-        </button>
-        <button class="avatar" data-avatar="female" onclick="chooseAvatar('female')" aria-label="شخصية أنثى">
-          <img src="https://i.imgur.com/zKn2h9M.png" alt="أنثى" />
-          <div class="avatar-label">أنثى</div>
-        </button>
-      </div>
-      <button class="primary" id="startBtn" onclick="startChat()">ابدأ رحلتك 🌌</button>
-      <p class="muted">الخصوصية مضمونة — لا يتم إرسال بياناتك خارج جهازك.</p>
-    </section>
+    <!-- البوابة الرئيسية -->
+    <div id="soul-portal">
+        <div class="portal-glow"></div>
+        
+        <div class="portal-content">
+            <div class="title-magic">
+                <h1 class="main-title">كونكِ الداخلي</h1>
+                <div class="title-sub">حيث تصبح المشاعر عوالم</div>
+            </div>
 
-    <!-- Chat -->
-    <section id="chat-screen" class="card hidden" aria-live="polite">
-      <div id="ai-response" class="response">كيف تشعر اليوم؟ اكتب بضعة كلمات دون معلومات شخصية.</div>
-      <input id="user-input" type="text" placeholder="اكتب شعورك هنا..." aria-label="حقل الشعور" />
-      <div class="actions">
-        <button class="primary" id="sendBtn" onclick="analyzeMood()">إرسال</button>
-        <button class="ghost" onclick="goBack()">اختيار شخصية</button>
-      </div>
-      <p class="muted small">استخدام تجريبي — لا يُعد بديلاً عن الدعم المهني.</p>
-    </section>
-  </main>
+            <!-- مرآة المشاعر الحية -->
+            <div class="emotion-mirror">
+                <div class="mirror-frame">
+                    <div class="mirror-glass" id="livingMirror">
+                        <div class="reflection" id="currentReflection">
+                            🌙 أنتِ جميلة كما أنتِ
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-  <!-- 3D world canvas -->
-  <canvas id="world-canvas" aria-hidden="true"></canvas>
+            <!-- محادثة الروح -->
+            <div class="soul-dialogue">
+                <div class="dialogue-bubble ai-bubble">
+                    <div class="bubble-content">
+                        "كل مشاعركِ هي لغة... وأنا هنا لأتعلم لغتكِ"
+                    </div>
+                    <div class="bubble-author">رفيق رحلتكِ</div>
+                </div>
 
-  <footer>
-    <small>نسخة تجريبية — محفوظة لك خصوصيتك.</small>
-  </footer>
+                <div class="user-expression">
+                    <div class="expression-input">
+                        <textarea 
+                            id="soulMessage" 
+                            placeholder="ها هي مساحتكِ الآمنة... اكتبي بلا خوف"
+                            rows="3"
+                        ></textarea>
+                        <div class="input-glow"></div>
+                    </div>
+                    
+                    <button class="magic-btn" id="expressSoul">
+                        <span class="btn-text">أرسلي رسالة إلى روحكِ</span>
+                        <div class="btn-sparkle">✨</div>
+                    </button>
+                </div>
 
-  <!-- libs and scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="security.js"></script>
-  <script src="world.js"></script>
-  <script src="script.js"></script>
+                <!-- الاستجابة الحية -->
+                <div class="response-container" id="soulResponse">
+                    <!-- ستأتي الردود هنا -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="soulAI.js"></script>
+    <script src="livingUniverse.js"></script>
 </body>
 </html>
