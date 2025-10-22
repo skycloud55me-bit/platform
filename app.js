@@ -337,11 +337,14 @@ class SmartCalendar {
     }
 }
 
-class CompanionApp {
+    class CompanionApp {
     constructor() {
         this.userName = '';
         this.userMood = 'happy';
         this.calendar = null;
+        this.voiceSystem = null;
+        this.notificationSystem = null;
+        this.progressTracker = null;
         this.init();
     }
 
@@ -349,8 +352,33 @@ class CompanionApp {
         this.loadUserData();
         this.setupEventListeners();
         this.showWelcomeScreen();
-        this.initCalendar();
+        this.initAllSystems();
     }
+
+    initAllSystems() {
+        this.calendar = new SmartCalendar();
+        this.voiceSystem = new AdvancedVoiceSystem();
+        this.notificationSystem = new SmartNotificationSystem();
+        this.progressTracker = new ProgressTracker();
+    }
+    
+    // تحديث دوال التتبع
+    completeTask(taskId) {
+        this.calendar.completeTask(taskId);
+        this.progressTracker.trackTaskCompletion();
+    }
+    
+    addNewTask(title, dateTime, repeat) {
+        this.calendar.addTask(title, dateTime, repeat);
+        this.progressTracker.trackTaskCreation();
+    }
+    
+    changeMood(mood) {
+        this.userMood = mood;
+        this.updateWorldScene();
+        this.progressTracker.trackMoodChange();
+    }
+}
 
     initCalendar() {
         this.calendar = new SmartCalendar();
