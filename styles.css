@@ -21,7 +21,6 @@ body {
     overflow: hidden;
 }
 
-/* العالم الافتراضي */
 #virtual-world {
     position: fixed;
     top: 0;
@@ -110,7 +109,6 @@ body {
     75% { transform: translate(-20px, -10px) rotate(3deg); }
 }
 
-/* المساعد الصوتي */
 #voice-assistant {
     position: fixed;
     bottom: 80px;
@@ -248,7 +246,6 @@ body {
     color: white;
 }
 
-/* نظام التقويم */
 .calendar-container {
     background: var(--surface);
     border-radius: 15px;
@@ -302,6 +299,10 @@ body {
     cursor: pointer;
     position: relative;
     min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .calendar-day.header {
@@ -316,14 +317,14 @@ body {
 
 .calendar-day.has-tasks {
     border: 2px solid var(--secondary);
+    background: rgba(78, 205, 196, 0.1);
 }
 
 .task-dot {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
     color: var(--secondary);
     font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 2px;
 }
 
 .tasks-overview {
@@ -334,22 +335,34 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 12px;
     background: rgba(255,255,255,0.05);
-    margin: 5px 0;
-    border-radius: 8px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border-right: 3px solid var(--secondary);
+}
+
+.upcoming-task .task-time {
+    color: var(--secondary);
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.upcoming-task .task-title {
+    flex: 1;
+    margin: 0 10px;
 }
 
 .upcoming-task button {
     background: var(--secondary);
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 6px 10px;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 0.8em;
 }
 
-/* النافذة المنبثقة */
 .modal {
     display: none;
     position: fixed;
@@ -421,7 +434,6 @@ body {
     flex: 1;
 }
 
-/* التنقل */
 .main-nav {
     position: fixed;
     bottom: 0;
@@ -451,7 +463,6 @@ body {
     color: white;
 }
 
-/* الإشعارات */
 .notification {
     position: fixed;
     top: 20px;
@@ -494,31 +505,6 @@ body {
     #voice-assistant {
         width: 95%;
         bottom: 70px;
-    }
-    
-    .character-image {
-        font-size: 3em;
-    }
-    
-    .quick-actions {
-        grid-template-columns: 1fr;
-    }
-    
-    .calendar-grid {
-        gap: 2px;
-    }
-    
-    .calendar-day {
-        padding: 8px;
-        min-height: 50px;
-        font-size: 0.9em;
-    }
-
-    /* تحسينات للجوال */
-@media (max-width: 768px) {
-    #voice-assistant {
-        width: 95%;
-        bottom: 70px;
         padding: 15px;
     }
     
@@ -526,45 +512,40 @@ body {
         font-size: 2.5em;
     }
     
-    .character-name {
-        font-size: 0.9em;
-        padding: 3px 10px;
+    .quick-actions {
+        grid-template-columns: 1fr;
     }
     
     .calendar-grid {
-        grid-template-columns: repeat(7, 1fr);
         gap: 2px;
     }
     
     .calendar-day {
         padding: 8px 2px;
-        min-height: 40px;
-        font-size: 0.8em;
-    }
-    
-    .calendar-day.header {
-        font-size: 0.7em;
-        padding: 8px 2px;
-    }
-    
-    .quick-actions {
-        grid-template-columns: 1fr;
-        gap: 5px;
-    }
-    
-    .quick-actions button {
-        padding: 8px;
+        min-height: 50px;
         font-size: 0.9em;
+    }
+    
+    .calendar-nav {
+        flex-direction: column;
+        gap: 10px;
     }
     
     .voice-controls {
         flex-direction: column;
-        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    #voice-assistant {
+        bottom: 60px;
+        padding: 12px;
     }
     
-    .modal-content {
-        padding: 20px;
-        margin: 10px;
+    .calendar-day {
+        min-height: 45px;
+        padding: 5px 1px;
+        font-size: 0.8em;
     }
     
     .main-nav {
@@ -575,188 +556,4 @@ body {
         padding: 8px 12px;
         font-size: 1em;
     }
-}
-
-/* تحسينات للحاسوب */
-@media (min-width: 1024px) {
-    #voice-assistant {
-        max-width: 600px;
-    }
-    
-    .calendar-grid {
-        gap: 8px;
-    }
-    
-    .calendar-day {
-        min-height: 80px;
-        padding: 15px;
-        font-size: 1.1em;
-    }
-    
-    .character-image {
-        font-size: 5em;
-    }
-}
-
-/* تحسين النقاط الحمراء للمهام */
-.task-dot {
-    position: absolute;
-    bottom: 3px;
-    right: 3px;
-    color: var(--secondary);
-    font-size: 1.2em;
-    font-weight: bold;
-}
-
-@media (max-width: 768px) {
-    .task-dot {
-        bottom: 1px;
-        right: 1px;
-        font-size: 1em;
-    }
-}
-
-/* تحسين ظهور النقاط في التقويم */
-.calendar-day.has-tasks {
-    position: relative;
-    background: rgba(78, 205, 196, 0.1);
-}
-
-.calendar-day.has-tasks .task-dot {
-    display: block;
-}
-
-/* إصلاح مشكلة العناصر الطافية */
-.floating-elements .element {
-    font-size: 1.2em;
-}
-
-@media (max-width: 768px) {
-    .floating-elements .element {
-        font-size: 1em;
-    }
-    
-    .element:nth-child(1) { top: 15%; left: 5%; }
-    .element:nth-child(2) { top: 70%; left: 85%; }
-    .element:nth-child(3) { top: 50%; left: 70%; }
-     }
-}
-
-/* تحسين النافذة المنبثقة */
-.modal-content {
-    background: var(--surface);
-    padding: 25px;
-    border-radius: 15px;
-    width: 95%;
-    max-width: 450px;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-.form-group {
-    margin: 15px 0;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: var(--secondary);
-    font-weight: bold;
-}
-
-.form-group input,
-.form-group select {
-    width: 100%;
-    padding: 12px 15px;
-    border: 2px solid var(--primary);
-    border-radius: 10px;
-    background: rgba(255,255,255,0.1);
-    color: var(--text);
-    font-size: 1em;
-    transition: border-color 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-    outline: none;
-    border-color: var(--secondary);
-}
-
-/* تحسين محتوى اليوم في التقويم */
-.day-content {
-    text-align: center;
-    font-weight: bold;
-}
-
-.calendar-day {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
-/* تحسين الشاشات الصغيرة جداً */
-@media (max-width: 480px) {
-    #voice-assistant {
-        bottom: 60px;
-        padding: 12px;
-    }
-    
-    .calendar-nav {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .calendar-nav button {
-        width: 100%;
-    }
-    
-    .calendar-day {
-        min-height: 35px;
-        padding: 5px 1px;
-        font-size: 0.75em;
-    }
-    
-    .main-nav {
-        padding: 5px;
-    }
-    
-    .nav-btn {
-        padding: 6px 8px;
-        font-size: 0.9em;
-    }
-}
-
-/* تحسين المهام القادمة */
-.upcoming-task {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px;
-    background: rgba(255,255,255,0.05);
-    margin: 8px 0;
-    border-radius: 10px;
-    border-right: 3px solid var(--secondary);
-}
-
-.upcoming-task .task-time {
-    color: var(--secondary);
-    font-weight: bold;
-    font-size: 0.9em;
-}
-
-.upcoming-task .task-title {
-    flex: 1;
-    margin: 0 10px;
-}
-
-.upcoming-task button {
-    background: var(--secondary);
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.8em;
 }
