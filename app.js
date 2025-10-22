@@ -250,7 +250,7 @@ class SmartCalendar {
     }
 }
 
-class CompanionApp {
+    class CompanionApp {
     constructor() {
         this.userName = '';
         this.userMood = 'happy';
@@ -271,16 +271,28 @@ class CompanionApp {
         // إضافة كلاس للجسم حسب نوع الجهاز
         if (this.isMobile) {
             document.body.classList.add('mobile-device');
+            console.log('📱 تم الكشف عن جهاز محمول');
         } else {
             document.body.classList.add('desktop-device');
+            console.log('💻 تم الكشف عن حاسوب');
         }
         
         // تحسين للشاشات الصغيرة
         if (window.innerWidth < 480) {
             document.body.classList.add('very-small-screen');
-         }
-       }
+            console.log('📱 شاشة صغيرة جداً');
+        }
+        
+        // إضافة حجم الشاشة ككلاس
+        if (window.innerWidth < 768) {
+            document.body.classList.add('small-screen');
+        } else if (window.innerWidth < 1024) {
+            document.body.classList.add('medium-screen');
+        } else {
+            document.body.classList.add('large-screen');
+        }
     }
+}
 
     loadUserData() {
         const savedName = localStorage.getItem('userName');
