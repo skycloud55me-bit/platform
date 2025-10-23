@@ -598,6 +598,7 @@ class AdvancedAI {
     }
 }
 
+
 class CompanionApp {
     constructor() {
         this.userName = '';
@@ -605,6 +606,8 @@ class CompanionApp {
         this.calendar = null;
         this.voiceSystem = null;
         this.progressTracker = null;
+        this.aiSystem = null;
+        this.world3D = null;
         this.init();
     }
 
@@ -614,6 +617,69 @@ class CompanionApp {
         this.showWelcomeScreen();
         this.initAllSystems();
     }
+
+    initAllSystems() {
+        this.calendar = new SmartCalendar();
+        this.voiceSystem = new AdvancedVoiceSystem();
+        this.progressTracker = new ProgressTracker();
+        this.aiSystem = new AdvancedAI();
+        
+        // تهيئة العالم 3D بعد تحميل الصفحة
+        setTimeout(() => {
+            this.world3D = new Interactive3DWorld();
+        }, 1000);
+        
+        if ('Notification' in window) {
+            Notification.requestPermission();
+        }
+    }
+
+    // تحديث دالة changeMood
+    changeMood(mood) {
+        this.userMood = mood;
+        this.updateWorldScene();
+        
+        if (this.aiSystem) {
+            const response = this.aiSystem.generateMoodResponse(mood, { userName: this.userName });
+            this.addAIMessage(response);
+            this.speakMessage(response);
+        }
+        
+        if (this.progressTracker) {
+            this.progressTracker.trackMoodChange();
+        }
+    }
+
+    updateWorldScene() {
+        // تحديث العالم 3D
+        if (this.world3D) {
+            this.world3D.changeEnvironment(this.userMood);
+        }
+        
+        // تحديث الواجهة 2D
+        const scene = document.getElementById('scene');
+        if (scene) {
+            scene.className = `scene ${this.userMood}-scene`;
+        }
+    }
+
+    // تحديث معالجة الرسائل
+    async processUserMessage(text) {
+        this.addUserMessage(text);
+        
+        if (this.aiSystem) {
+            const context = {
+                userName: this.userName,
+                currentMood: this.userMood,
+                tasks: this.calendar ? this.calendar.tasks : []
+            };
+            
+            const response = await this.aiSystem.generateResponse(text, context);
+            this.addAIMessage(response);
+            this.speakMessage(response);
+        }
+    }
+}
 
     initAllSystems() {
         this.calendar = new SmartCalendar();
