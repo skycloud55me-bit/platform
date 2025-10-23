@@ -98,12 +98,10 @@ class SmartCalendar {
         if (taskTime > now) {
             const timeUntilTask = taskTime.getTime() - now.getTime();
             
-            // إشعار قبل 15 دقيقة
             setTimeout(() => {
                 this.showNotification(`⏰ تذكير: ${task.title} بعد 15 دقيقة`);
             }, timeUntilTask - (15 * 60 * 1000));
             
-            // إشعار في الوقت المحدد
             setTimeout(() => {
                 this.showNotification(`🔔 حان وقت: ${task.title}`);
                 this.speakReminder(task.title);
@@ -112,7 +110,6 @@ class SmartCalendar {
     }
 
     showNotification(message) {
-        // إشعار المتصفح
         if ('Notification' in window) {
             Notification.requestPermission().then(permission => {
                 if (permission === 'granted') {
@@ -124,7 +121,6 @@ class SmartCalendar {
             });
         }
         
-        // إشعار داخل التطبيق
         this.showInAppNotification(message);
     }
 
@@ -448,12 +444,11 @@ class ProgressTracker {
     }
 }
 
-
 class AdvancedAI {
     constructor() {
         this.conversationHistory = [];
         this.personality = "مرشد روحي ودود";
-        this.apiKey = 'your-api-key'; // سنستخدم بديل مجاني أولاً
+        this.apiKey = 'your-api-key';
     }
 
     async generateResponse(userMessage, context) {
@@ -527,6 +522,21 @@ class AdvancedAI {
         return 'conversation';
     }
 
+    detectUrgency(text) {
+        if (text.includes('ضروري') || text.includes('عاجل') || text.includes('الآن')) return 'high';
+        if (text.includes('مهم') || text.includes('يجب') || text.includes('ضرورة')) return 'medium';
+        return 'low';
+    }
+
+    extractTopics(text) {
+        const topics = [];
+        if (text.includes('عمل') || text.includes('وظيفة') || text.includes('مهنة')) topics.push('work');
+        if (text.includes('عائلة') || text.includes('أهل') || text.includes('أقارب')) topics.push('family');
+        if (text.includes('أصدقاء') || text.includes('صديق') || text.includes('رفاق')) topics.push('friends');
+        if (text.includes('صحة') || text.includes('رياضة') || text.includes('نوم')) topics.push('health');
+        return topics;
+    }
+
     generateGreetingResponse(userName) {
         const greetings = [
             `أهلاً وسهلاً بعودتك ${userName}! 🌸 العالم ينتظر استكشافك`,
@@ -552,6 +562,11 @@ class AdvancedAI {
                 "🌀 دعينا نأخذ نفساً معاً... أنتِ في مكان آمن هنا",
                 "🎐 القلق هو مجرد زائر... دعينا نستقبله ثم نودعه",
                 "🌊 الأفكار مثل الأمواج... ستهدأ عندما تعطيها مساحة"
+            ],
+            peaceful: [
+                "🍃 هدوئك يشبه نسمة الصباح الهادئة... كيف حافظتِ على هذا السلام؟",
+                "⭐️ الطمأنينة التي تشعرين بها هي كنز حقيقي... ما مصدرها؟",
+                "🌄 السلام الداخلي هو أعظم هدية... شاركيني سر هذا الهدوء"
             ]
         };
 
@@ -559,18 +574,28 @@ class AdvancedAI {
                "شكراً لمشاركتي مشاعرك... كل تجربة تثري رحلتنا 🌟";
     }
 
+    generateTaskResponse(message, context) {
+        const taskResponses = [
+            "📝 رائع! يمكنك إضافة المهمة من خلال التقويم... هل تريدين مساعدة في تنظيمها؟",
+            "🎯 اهتمامك بتنظيم مهامك يدل على وعي جميل! دعينا نخطط معاً",
+            "⏰ كل مهمة تضيفينها هي خطوة نحو تحقيق أحلامك... أضيفيها وسأساعدك في متابعتها"
+        ];
+        return taskResponses[Math.floor(Math.random() * taskResponses.length)];
+    }
+
     generateDeepResponse(message, context) {
         const deepResponses = [
             "🔍 هذا السؤال يلامس شيئاً عميقاً... ما رأيك أنت فيه؟",
             "🌌 كل إجابة تحمل في طياتها أسئلة جديدة... هذه جمالية الاستكشاف",
             "💭 أفكارك مثل بذور في تربة خصبة... أي واحدة تريدين أن تنمو أولاً؟",
-            "🎭 الحياة مسرح نتعلم فيه أدوارنا... أي مشهد تريدين إتقانه الآن؟"
+            "🎭 الحياة مسرح نتعلم فيه أدوارنا... أي مشهد تريدين إتقانه الآن؟",
+            "🦋 التحول يحتاج شجاعة... وأرى فيك هذه الشجاعة!",
+            "🌺 كل تجربة تمرين بها تضيف لوناً جديداً لشخصيتك الرائعة"
         ];
 
         return deepResponses[Math.floor(Math.random() * deepResponses.length)];
     }
 
-    // تحليل متقدم للشخصية
     analyzePersonality(conversations) {
         const traits = {
             introspective: 0,
@@ -598,7 +623,6 @@ class AdvancedAI {
     }
 }
 
-
 class CompanionApp {
     constructor() {
         this.userName = '';
@@ -607,7 +631,6 @@ class CompanionApp {
         this.voiceSystem = null;
         this.progressTracker = null;
         this.aiSystem = null;
-        this.world3D = null;
         this.init();
     }
 
@@ -624,69 +647,6 @@ class CompanionApp {
         this.progressTracker = new ProgressTracker();
         this.aiSystem = new AdvancedAI();
         
-        // تهيئة العالم 3D بعد تحميل الصفحة
-        setTimeout(() => {
-            this.world3D = new Interactive3DWorld();
-        }, 1000);
-        
-        if ('Notification' in window) {
-            Notification.requestPermission();
-        }
-    }
-
-    // تحديث دالة changeMood
-    changeMood(mood) {
-        this.userMood = mood;
-        this.updateWorldScene();
-        
-        if (this.aiSystem) {
-            const response = this.aiSystem.generateMoodResponse(mood, { userName: this.userName });
-            this.addAIMessage(response);
-            this.speakMessage(response);
-        }
-        
-        if (this.progressTracker) {
-            this.progressTracker.trackMoodChange();
-        }
-    }
-
-    updateWorldScene() {
-        // تحديث العالم 3D
-        if (this.world3D) {
-            this.world3D.changeEnvironment(this.userMood);
-        }
-        
-        // تحديث الواجهة 2D
-        const scene = document.getElementById('scene');
-        if (scene) {
-            scene.className = `scene ${this.userMood}-scene`;
-        }
-    }
-
-    // تحديث معالجة الرسائل
-    async processUserMessage(text) {
-        this.addUserMessage(text);
-        
-        if (this.aiSystem) {
-            const context = {
-                userName: this.userName,
-                currentMood: this.userMood,
-                tasks: this.calendar ? this.calendar.tasks : []
-            };
-            
-            const response = await this.aiSystem.generateResponse(text, context);
-            this.addAIMessage(response);
-            this.speakMessage(response);
-        }
-    }
-}
-
-    initAllSystems() {
-        this.calendar = new SmartCalendar();
-        this.voiceSystem = new AdvancedVoiceSystem();
-        this.progressTracker = new ProgressTracker();
-        
-        // طلب صلاحية الإشعارات
         if ('Notification' in window) {
             Notification.requestPermission();
         }
@@ -779,17 +739,29 @@ class CompanionApp {
         }
     }
 
-    processUserMessage(text) {
+    async processUserMessage(text) {
         this.addUserMessage(text);
         
-        setTimeout(() => {
-            const responses = [
-                "أفهم ما تقولين... هل يمكنك مشاركتي المزيد؟ 💭",
-                "شكراً لمشاركتي هذا... أستمع إليك بكل اهتمام 👂",
-                "كل كلمة تقولينها تساعدني في فهمك أكثر 🌸"
-            ];
+        setTimeout(async () => {
+            let response;
             
-            const response = responses[Math.floor(Math.random() * responses.length)];
+            if (this.aiSystem) {
+                const context = {
+                    userName: this.userName,
+                    currentMood: this.userMood,
+                    tasks: this.calendar ? this.calendar.tasks : []
+                };
+                
+                response = await this.aiSystem.generateResponse(text, context);
+            } else {
+                const responses = [
+                    "أفهم ما تقولين... هل يمكنك مشاركتي المزيد؟ 💭",
+                    "شكراً لمشاركتي هذا... أستمع إليك بكل اهتمام 👂",
+                    "كل كلمة تقولينها تساعدني في فهمك أكثر 🌸"
+                ];
+                response = responses[Math.floor(Math.random() * responses.length)];
+            }
+            
             this.addAIMessage(response);
             this.speakMessage(response);
         }, 1000);
@@ -826,12 +798,20 @@ class CompanionApp {
         this.userMood = mood;
         this.updateWorldScene();
         
-        const moodMessages = {
-            happy: "رائع! السعادة تليق بك! 🌞",
-            calm: "الهدوء يجلب السلام الداخلي 🕊️"
-        };
+        let response;
+        if (this.aiSystem) {
+            response = this.aiSystem.generateMoodResponse(mood, { userName: this.userName });
+        } else {
+            const moodMessages = {
+                happy: "رائع! السعادة تليق بك! 🌞",
+                calm: "الهدوء يجلب السلام الداخلي 🕊️",
+                peaceful: "الطمأنينة تجعل كل شيء أجمل 🌸"
+            };
+            response = moodMessages[mood] || "شكراً لمشاركة مشاعرك معي 💕";
+        }
         
-        this.addAIMessage(moodMessages[mood] || "شكراً لمشاركة مشاعرك معي 💕");
+        this.addAIMessage(response);
+        this.speakMessage(response);
         
         if (this.progressTracker) {
             this.progressTracker.trackMoodChange();
