@@ -448,6 +448,156 @@ class ProgressTracker {
     }
 }
 
+
+class AdvancedAI {
+    constructor() {
+        this.conversationHistory = [];
+        this.personality = "مرشد روحي ودود";
+        this.apiKey = 'your-api-key'; // سنستخدم بديل مجاني أولاً
+    }
+
+    async generateResponse(userMessage, context) {
+        // حفظ المحادثة
+        this.conversationHistory.push({
+            role: 'user',
+            content: userMessage,
+            timestamp: new Date().toISOString()
+        });
+
+        // توليد رد ذكي
+        const response = await this.analyzeAndRespond(userMessage, context);
+        
+        this.conversationHistory.push({
+            role: 'assistant',
+            content: response,
+            timestamp: new Date().toISOString()
+        });
+
+        return response;
+    }
+
+    async analyzeAndRespond(message, context) {
+        // تحليل المشاعر والنوايا
+        const analysis = this.analyzeMessage(message);
+        
+        // توليد رد بناءً على التحليل
+        if (analysis.intent === 'greeting') {
+            return this.generateGreetingResponse(context.userName);
+        } else if (analysis.intent === 'mood') {
+            return this.generateMoodResponse(analysis.emotion, context);
+        } else if (analysis.intent === 'task') {
+            return this.generateTaskResponse(message, context);
+        } else {
+            return this.generateDeepResponse(message, context);
+        }
+    }
+
+    analyzeMessage(message) {
+        const lowerMessage = message.toLowerCase();
+        
+        return {
+            emotion: this.detectEmotion(lowerMessage),
+            intent: this.detectIntent(lowerMessage),
+            urgency: this.detectUrgency(lowerMessage),
+            topics: this.extractTopics(lowerMessage)
+        };
+    }
+
+    detectEmotion(text) {
+        const emotions = {
+            happy: ['سعيد', 'فرح', 'مبسوط', 'رائع', 'جميل', 'تمام'],
+            sad: ['حزين', 'تعبان', 'متضايق', 'زعلان', 'محتاج'],
+            anxious: ['قلق', 'توتر', 'خوف', 'تردد', 'اضطراب'],
+            peaceful: ['سلام', 'طمأنينة', 'هدوء', 'صفاء']
+        };
+
+        for (const [emotion, words] of Object.entries(emotions)) {
+            if (words.some(word => text.includes(word))) {
+                return emotion;
+            }
+        }
+        return 'neutral';
+    }
+
+    detectIntent(text) {
+        if (text.includes('مرحبا') || text.includes('اهلا') || text.includes('سلام')) return 'greeting';
+        if (text.includes('مهمة') || text.includes('تذكير') || text.includes('اضيف')) return 'task';
+        if (text.includes('مزاج') || text.includes('شعور') || text.includes('احساس')) return 'mood';
+        if (text.includes('لماذا') || text.includes('كيف') || text.includes('متى')) return 'question';
+        return 'conversation';
+    }
+
+    generateGreetingResponse(userName) {
+        const greetings = [
+            `أهلاً وسهلاً بعودتك ${userName}! 🌸 العالم ينتظر استكشافك`,
+            `مرحباً ${userName}! 💫 سعيدة برؤيتك في عالمنا الجميل`,
+            `يا هلا ${userName}! 🌟 كل شيء هنا أصبح أجمل بوجودك`
+        ];
+        return greetings[Math.floor(Math.random() * greetings.length)];
+    }
+
+    generateMoodResponse(emotion, context) {
+        const responses = {
+            happy: [
+                "🌞 فرحك يضيء العالم من حولك! شاركيني سر هذه البهجة",
+                "🌈 أرى ألوان السعادة في كلماتك! هذا يجعل قلبي يرقص فرحاً",
+                "🌸 كل زهرة في عالمنا تبتسم معك اليوم!"
+            ],
+            sad: [
+                "🫂 أحتضن مشاعرك بأمان... كل شعور هو رسالة تحتاج للاستماع",
+                "🌙 حتى النجوم تختفي أحياناً لتظهر من جديد... مشاعرك أيضاً",
+                "💧 لا بأس في أن تشعري بكل هذا... أنتِ إنسانة تشعر بعمق"
+            ],
+            anxious: [
+                "🌀 دعينا نأخذ نفساً معاً... أنتِ في مكان آمن هنا",
+                "🎐 القلق هو مجرد زائر... دعينا نستقبله ثم نودعه",
+                "🌊 الأفكار مثل الأمواج... ستهدأ عندما تعطيها مساحة"
+            ]
+        };
+
+        return responses[emotion]?.[Math.floor(Math.random() * responses[emotion].length)] || 
+               "شكراً لمشاركتي مشاعرك... كل تجربة تثري رحلتنا 🌟";
+    }
+
+    generateDeepResponse(message, context) {
+        const deepResponses = [
+            "🔍 هذا السؤال يلامس شيئاً عميقاً... ما رأيك أنت فيه؟",
+            "🌌 كل إجابة تحمل في طياتها أسئلة جديدة... هذه جمالية الاستكشاف",
+            "💭 أفكارك مثل بذور في تربة خصبة... أي واحدة تريدين أن تنمو أولاً؟",
+            "🎭 الحياة مسرح نتعلم فيه أدوارنا... أي مشهد تريدين إتقانه الآن؟"
+        ];
+
+        return deepResponses[Math.floor(Math.random() * deepResponses.length)];
+    }
+
+    // تحليل متقدم للشخصية
+    analyzePersonality(conversations) {
+        const traits = {
+            introspective: 0,
+            creative: 0,
+            practical: 0,
+            emotional: 0
+        };
+
+        conversations.forEach(conv => {
+            if (conv.content.includes('لماذا') || conv.content.includes('معنى')) {
+                traits.introspective++;
+            }
+            if (conv.content.includes('خيال') || conv.content.includes('حلم') || conv.content.includes('ابداع')) {
+                traits.creative++;
+            }
+            if (conv.content.includes('مهمة') || conv.content.includes('خطة') || conv.content.includes('تنظيم')) {
+                traits.practical++;
+            }
+            if (this.detectEmotion(conv.content) !== 'neutral') {
+                traits.emotional++;
+            }
+        });
+
+        return traits;
+    }
+}
+
 class CompanionApp {
     constructor() {
         this.userName = '';
